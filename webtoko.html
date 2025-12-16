@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>E-Commerce - Yupita Shop</title>
+    <link rel="stylesheet" href="assets/css/stylewebtoko.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+
+<body>
+    <!-- NAV BAR -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <div class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>YUPITA SHOP</span>
+                </div>
+                <div class="subtitle">Barang Berkualitas & Original</div>
+            </div>
+            <div class="navbar-right">
+                <span id="loggedInUser" class="user-display"></span>
+                <div class="navbar-buttons">
+                    <a href="#" id="logoutButton" class="nav-button logout-button" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="button-text">Logout</span>
+                    </a>
+                    <a href="carabelanjatoko.html" class="nav-button info-button" title="Cara Belanja">
+                        <i class="fas fa-info-circle"></i>
+                        <span class="button-text">Cara Belanja</span>
+                    </a>
+                    <a href="riwayatpesanan.html" id="ordersButton" class="nav-button orders-button"
+                        title="Riwayat Pesanan Saya">
+                        <i class="fas fa-clipboard-list"></i> </a>
+                    <a href="#" id="cartButton" class="nav-button cart-button" title="Keranjang">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cartCount" class="cart-badge">0</span>
+                    </a>
+                    <a href="https://wa.me/628990023990?text=Hallo Yupita Shop saya mau bertanya"
+                        class="nav-button chat-button" title="Chat Admin">
+                        <i class="fab fa-whatsapp"></i>
+                        <span class="button-text">Chat Admin</span>
+                    </a>
+                </div>
+                <button class="hamburger-menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title animate__animated animate__fadeInDown">Temukan Produk Terbaik</h1>
+            <p class="hero-subtitle animate__animated animate__fadeInDown animate__delay-1s">Kualitas premium dengan
+                harga
+                terjangkau</p>
+            <div class="search-container animate__animated animate__fadeInUp animate__delay-2s">
+                <form onsubmit="searchProduct(event)" class="search-form">
+                    <input id="search-barang" type="text" placeholder="Cari produk..." class="search-input" />
+                    <button type="submit" class="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section class="features">
+        <div class="feature-item">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Produk Original</h3>
+            <p>100% barang asli dengan garansi resmi</p>
+        </div>
+        <div class="feature-item">
+            <i class="fas fa-truck"></i>
+            <h3>Pengiriman Cepat</h3>
+            <p>Proses cepat dengan berbagai pilihan ekspedisi</p>
+        </div>
+        <div class="feature-item">
+            <i class="fas fa-headset"></i>
+            <h3>Customer Service</h3>
+            <p>Bantuan 24 jam siap melayani Anda</p>
+        </div>
+    </section>
+
+    <!-- PRODUCT LIST -->
+    <section class="product-section">
+        <h2 class="section-title">Produk Terbaru</h2>
+        <div class="product-filters">
+            <button class="filter-btn active" data-category="all">Semua</button>
+            <button class="filter-btn" data-category="fashion">Fashion</button>
+            <button class="filter-btn" data-category="electronics">Elektronik</button>
+            <button class="filter-btn" data-category="accessories">Aksesoris</button>
+        </div>
+        <div class="product-grid">
+            <!-- Produk 1 -->
+            <div class="product-card" id="product1" data-category="fashion">
+                <div class="product-badge">Limited</div>
+                <div class="product-image">
+                    <img src="assets/images/sepatu_aerostreet_doraemon_white_blue.jpg"
+                        alt="Aerostreet X Doraemon White Blue Limited Edition - Sepatu Sneakers Casual">
+                    <div class="product-overlay">
+                        <button class="quick-view" data-id="product1">Quick View</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3>Aerostreet X Doraemon White Blue</h3>
+                    <div class="product-meta">
+                        <span class="product-category">Fashion</span>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span>(23)</span>
+                        </div>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">Rp 229.999</span>
+                    </div>
+                    <div class="product-options">
+                        <div class="size-options">
+                            <label>Ukuran:</label>
+                            <select class="size-select" data-id="product1">
+                                <option value="">Pilih Ukuran</option>
+                                <option value="38">38</option>
+                                <option value="39">39</option>
+                                <option value="40">40</option>
+                                <option value="41">41</option>
+                                <option value="42">42</option>
+                                <option value="43">43</option>
+                                <option value="44">44</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-cart" data-id="product1"
+                            data-name="Aerostreet X Doraemon White Blue Limited Edition - Sepatu Sneakers Casual"
+                            data-price="229999" data-category="fashion"
+                            data-image="assets/images/sepatu_aerostreet_doraemon_white_blue.jpg">
+                            <i class="fas fa-shopping-cart"></i> Keranjang
+                        </button>
+                        <button class="buy-now" data-id="product1"
+                            data-name="Aerostreet X Doraemon White Blue Limited Edition - Sepatu Sneakers Casual"
+                            data-price="229999" data-category="fashion"
+                            data-image="assets/images/sepatu_aerostreet_doraemon_white_blue.jpg">
+                            Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produk 2 -->
+            <div class="product-card" id="product2" data-category="fashion">
+                <div class="product-badge">Limited</div>
+                <div class="product-image">
+                    <img src="assets/images/sepatu_aerostreet_gibran_s2.jpg"
+                        alt="Aerostreet X Gibran Rakabuming Raka Season 2 - Sepatu Sneakers Casual">
+                    <div class="product-overlay">
+                        <button class="quick-view" data-id="product2">Quick View</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3>Aerostreet X Gibran Rakabuming Raka</h3>
+                    <div class="product-meta">
+                        <span class="product-category">Fashion</span>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span>(28)</span>
+                        </div>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">Rp 249.999</span>
+                    </div>
+                    <div class="product-options">
+                        <div class="size-options">
+                            <label>Ukuran:</label>
+                            <select class="size-select" data-id="product2">
+                                <option value="">Pilih Ukuran</option>
+                                <option value="38">38</option>
+                                <option value="39">39</option>
+                                <option value="40">40</option>
+                                <option value="41">41</option>
+                                <option value="42">42</option>
+                                <option value="43">43</option>
+                                <option value="44">44</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-cart" data-id="product2"
+                            data-name="Aerostreet X Gibran Rakabuming Raka Season 2 - Sepatu Sneakers Casual"
+                            data-price="249999" data-category="fashion"
+                            data-image="assets/images/sepatu_aerostreet_gibran_s2.jpg">
+                            <i class="fas fa-shopping-cart"></i> Keranjang
+                        </button>
+                        <button class="buy-now" data-id="product2"
+                            data-name="Aerostreet X Gibran Rakabuming Raka Season 2 - Sepatu Sneakers Casual"
+                            data-price="249999" data-category="fashion"
+                            data-image="assets/images/sepatu_aerostreet_gibran_s2.jpg">
+                            Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produk 3 -->
+            <div class="product-card" id="product3" data-category="fashion">
+                <div class="product-image">
+                    <img src="assets/images/sepatu_broklyn_series.jpg"
+                        alt="Aerostreet Broklyn Series (3 Colors) - Sepatu Sneakers Casual">
+                    <div class="product-overlay">
+                        <button class="quick-view" data-id="product3">Quick View</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3>Aerostreet Broklyn Series</h3>
+                    <div class="product-meta">
+                        <span class="product-category">Fashion</span>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>(99)</span>
+                        </div>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">Rp 179.999</span>
+                    </div>
+                    <div class="product-options">
+                        <div class="size-options">
+                            <label>Ukuran:</label>
+                            <select class="size-select" data-id="product3">
+                                <option value="">Pilih Ukuran</option>
+                                <option value="38">38</option>
+                                <option value="39">39</option>
+                                <option value="40">40</option>
+                                <option value="41">41</option>
+                                <option value="42">42</option>
+                                <option value="43">43</option>
+                                <option value="44">44</option>
+                            </select>
+                        </div>
+                        <div class="color-options">
+                            <label>Warna:</label>
+                            <select class="color-select" data-id="product3">
+                                <option value="">Pilih Warna</option>
+                                <option value="Merah">Merah</option>
+                                <option value="Kuning">Kuning</option>
+                                <option value="Hijau">Hijau</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-cart" data-id="product3"
+                            data-name="Aerostreet Broklyn Series (3 Colors) - Sepatu Sneakers Casual"
+                            data-price="179999" data-category="fashion"
+                            data-image="assets/images/sepatu_broklyn_series.jpg">
+                            <i class="fas fa-shopping-cart"></i> Keranjang
+                        </button>
+                        <button class="buy-now" data-id="product3"
+                            data-name="Aerostreet Broklyn Series (3 Colors) - Sepatu Sneakers Casual"
+                            data-price="179999" data-category="fashion"
+                            data-image="assets/images/sepatu_broklyn_series.jpg">
+                            Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produk 4 -->
+            <div class="product-card" id="product4" data-category="fashion">
+                <div class="product-badge">Limited</div>
+                <div class="product-image">
+                    <img src="assets/images/hoodie_hexsys_ryushiden.jpg" alt="Hoodie Hexsys Ryushiden">
+                    <div class="product-overlay">
+                        <button class="quick-view" data-id="product4">Quick View</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3>Hoodie Hexsys Ryushiden</h3>
+                    <div class="product-meta">
+                        <span class="product-category">Fashion</span>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span>(21)</span>
+                        </div>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">Rp 249.999</span>
+                    </div>
+                    <div class="product-options">
+                        <div class="size-options">
+                            <label>Ukuran:</label>
+                            <select class="size-select" data-id="product4">
+                                <option value="">Pilih Ukuran</option>
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                                <option value="XXL">XXL</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-cart" data-id="product4"
+                            data-name="Hoodie Hexsys Ryushiden Original Full Bordir Cowok" data-price="249999"
+                            data-category="fashion" data-image="assets/images/hoodie_hexsys_ryushiden.jpg">
+                            <i class="fas fa-shopping-cart"></i> Keranjang
+                        </button>
+                        <button class="buy-now" data-id="product4"
+                            data-name="Hoodie Hexsys Ryushiden Original Full Bordir Cowok" data-price="249999"
+                            data-category="fashion" data-image="assets/images/hoodie_hexsys_ryushiden.jpg">
+                            Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produk 5 -->
+            <div class="product-card" id="product5" data-category="electronics">
+                <div class="product-image">
+                    <img src="assets/images/headset_rexus_vonix_f30.jpg" alt="Headset Gaming Rexus Vonix F30 RGB">
+                    <div class="product-overlay">
+                        <button class="quick-view" data-id="product5">Quick View</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3>Headset Gaming Rexus Vonix F30 RGB</h3>
+                    <div class="product-meta">
+                        <span class="product-category">Elektronik</span>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span>(50)</span>
+                        </div>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">Rp 181.999</span>
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-cart" data-id="product5"
+                            data-name="Headset Gaming Rexus Vonix F30 RGB ORIGINAL" data-price="181999"
+                            data-category="electronics" data-image="assets/images/headset_rexus_vonix_f30.jpg">
+                            <i class="fas fa-shopping-cart"></i> Keranjang
+                        </button>
+                        <button class="buy-now" data-id="product5"
+                            data-name="Headset Gaming Rexus Vonix F30 RGB ORIGINAL" data-price="181999"
+                            data-category="electronics" data-image="assets/images/headset_rexus_vonix_f30.jpgE">
+                            Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produk 6 -->
+            <div class="product-card" id="product6" data-category="accessories">
+                <div class="product-image">
+                    <img src="assets/images/helm_njs_kairoz_stone_grey.jpg"
+                        alt="Helm Halfface NJS Kairoz Stone grey ORIGINAL">
+                    <div class="product-overlay">
+                        <button class="quick-view" data-id="product6">Quick View</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3>Helm Halfface NJS Kairoz Stone grey</h3>
+                    <div class="product-meta">
+                        <span class="product-category">Aksesoris</span>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>(55)</span>
+                        </div>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">Rp 799.999</span>
+                    </div>
+                    <div class="product-options">
+                        <div class="size-options">
+                            <label>Ukuran:</label>
+                            <select class="size-select" data-id="product6">
+                                <option value="">Pilih Ukuran</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-cart" data-id="product6"
+                            data-name="Helm Halfface NJS Kairoz Stone grey ORIGINAL" data-price="799999"
+                            data-category="accessories" data-image="assets/images/helm_njs_kairoz_stone_grey.jpg">
+                            <i class="fas fa-shopping-cart"></i> Keranjang
+                        </button>
+                        <button class="buy-now" data-id="product6"
+                            data-name="Helm Halfface NJS Kairoz Stone grey ORIGINAL" data-price="799999"
+                            data-category="accessories" data-image="assets/images/helm_njs_kairoz_stone_grey.jpg">
+                            Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produk 7 -->
+            <div class="product-card" id="product7" data-category="fashion">
+                <div class="product-image">
+                    <img src="assets/images/jaket_varisty_deliwafa.jpg"
+                        alt="Jaket Varisty Deliwafa Fortes Fortuna Adiuavat Tiger">
+                    <div class="product-overlay">
+                        <button class="quick-view" data-id="product7">Quick View</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3>Jaket Varisty Deliwafa</h3>
+                    <div class="product-meta">
+                        <span class="product-category">Fashion</span>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span>(34)</span>
+                        </div>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">Rp 449.999</span>
+                    </div>
+                    <div class="product-options">
+                        <div class="size-options">
+                            <label>Ukuran:</label>
+                            <select class="size-select" data-id="product7">
+                                <option value="">Pilih Ukuran</option>
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                                <option value="XXL">XXL</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-cart" data-id="product7"
+                            data-name="Jaket Varisty Deliwafa Fortes Fortuna Adiuavat Tiger" data-price="449999"
+                            data-category="fashion" data-image="assets/images/jaket_varisty_deliwafa.jpg">
+                            <i class="fas fa-shopping-cart"></i> Keranjang
+                        </button>
+                        <button class="buy-now" data-id="product7"
+                            data-name="Jaket Varisty Deliwafa Fortes Fortuna Adiuavat Tiger" data-price="449999"
+                            data-category="fashion" data-image="assets/images/jaket_varisty_deliwafa.jpg">
+                            Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produk 8 -->
+            <div class="product-card" id="product8" data-category="accessories">
+                <div class="product-image">
+                    <img src="assets/images/intercom_gearelec_dk02.jpg"
+                        alt="Intercom Helm Gearelec DK02 IPX7 Tahan Air">
+                    <div class="product-overlay">
+                        <button class="quick-view" data-id="product8">Quick View</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3>Intercom Helm Gearelec DK02</h3>
+                    <div class="product-meta">
+                        <span class="product-category">Aksesoris</span>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <i class="far fa-star"></i>
+                            <span>(47)</span>
+                        </div>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">Rp 179.999</span>
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-cart" data-id="product8"
+                            data-name="Intercom Helm Gearelec DK02 IPX7 Tahan Air" data-price="179999"
+                            data-category="accessories" data-image="assets/images/intercom_gearelec_dk02.jpg">
+                            <i class="fas fa-shopping-cart"></i> Keranjang
+                        </button>
+                        <button class="buy-now" data-id="product8"
+                            data-name="Intercom Helm Gearelec DK02 IPX7 Tahan Air" data-price="179999"
+                            data-category="accessories" data-image="assets/images/intercom_gearelec_dk02.jpg">
+                            Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produk 9 -->
+            <div class="product-card" id="product9" data-category="accessories">
+                <div class="product-image">
+                    <img src="assets/images/helm_jpx_supreme_black.jpg"
+                        alt="Helm Halfface JPX Supreme Hitam Glossy ORIGINAL">
+                    <div class="product-overlay">
+                        <button class="quick-view" data-id="product9">Quick View</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3>Helm Halfface JPX Supreme</h3>
+                    <div class="product-meta">
+                        <span class="product-category">Aksesoris</span>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>(68)</span>
+                        </div>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">Rp 299.999</span>
+                    </div>
+                    <div class="product-options">
+                        <div class="size-options">
+                            <label>Ukuran:</label>
+                            <select class="size-select" data-id="product9">
+                                <option value="">Pilih Ukuran</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-cart" data-id="product9"
+                            data-name="Helm Halfface JPX Supreme Hitam Glossy ORIGINAL" data-price="299999"
+                            data-category="accessories" data-image="assets/images/helm_jpx_supreme_black.jpg">
+                            <i class="fas fa-shopping-cart"></i> Keranjang
+                        </button>
+                        <button class="buy-now" data-id="product9"
+                            data-name="Helm Halfface JPX Supreme Hitam Glossy ORIGINAL" data-price="299999"
+                            data-category="accessories" data-image="assets/images/helm_jpx_supreme_black.jpg">
+                            Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produk 10 -->
+            <div class="product-card" id="product10" data-category="accessories">
+                <div class="product-image">
+                    <img src="assets/images/sarung_tangan_daymoton.jpg"
+                        alt="Sarung Tangan Daymoton Half Series Protector dan Anti Slip">
+                    <div class="product-overlay">
+                        <button class="quick-view" data-id="product10">Quick View</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3>Sarung Tangan Daymoton Half Series</h3>
+                    <div class="product-meta">
+                        <span class="product-category">Aksesoris</span>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span>(56)</span>
+                        </div>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">Rp 59.999</span>
+                    </div>
+                    <div class="product-options">
+                        <div class="size-options">
+                            <label>Ukuran:</label>
+                            <select class="size-select" data-id="product10">
+                                <option value="">Pilih Ukuran</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-cart" data-id="product10"
+                            data-name="Sarung Tangan Daymoton Half Series Protector dan Anti Slip" data-price="59999"
+                            data-category="accessories" data-image="assets/images/sarung_tangan_daymoton.jpg">
+                            <i class="fas fa-shopping-cart"></i> Keranjang
+                        </button>
+                        <button class="buy-now" data-id="product10"
+                            data-name="Sarung Tangan Daymoton Half Series Protector dan Anti Slip" data-price="59999"
+                            data-category="accessories" data-image="assets/images/sarung_tangan_daymoton.jpg">
+                            Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produk 11 -->
+            <div class="product-card" id="product11" data-category="electronics">
+                <div class="product-image">
+                    <img src="assets/images/fan_cooler_gamen_gmr02.jpg" alt="Fan Cooler GAMEN GMR02 Wireless ORIGINAL">
+                    <div class="product-overlay">
+                        <button class="quick-view" data-id="product11">Quick View</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3>Fan Cooler GAMEN GMR02 Wireless</h3>
+                    <div class="product-meta">
+                        <span class="product-category">Elektronik</span>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <i class="far fa-star"></i>
+                            <span>(78)</span>
+                        </div>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">Rp 149.999</span>
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-cart" data-id="product11"
+                            data-name="Fan Cooler GAMEN GMR02 Wireless ORIGINAL" data-price="149999"
+                            data-category="electronics" data-image="assets/images/fan_cooler_gamen_gmr02.jpg">
+                            <i class="fas fa-shopping-cart"></i> Keranjang
+                        </button>
+                        <button class="buy-now" data-id="product11" data-name="Fan Cooler GAMEN GMR02 Wireless ORIGINAL"
+                            data-price="149999" data-category="electronics"
+                            data-image="assets/images/fan_cooler_gamen_gmr02.jpg">
+                            Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produk 12 -->
+            <div class="product-card" id="product12" data-category="electronics">
+                <div class="product-image">
+                    <img src="assets/images/speaker_kisonli_l1030.jpg"
+                        alt="Kisonli L-1030 Speaker Komputer/Laptop Lampu LED">
+                    <div class="product-overlay">
+                        <button class="quick-view" data-id="product12">Quick View</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3>Kisonli L-1030 Speaker Komputer</h3>
+                    <div class="product-meta">
+                        <span class="product-category">Elektronik</span>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <span>(42)</span>
+                        </div>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">Rp 109.999</span>
+                    </div>
+                    <div class="product-actions">
+                        <button class="add-to-cart" data-id="product12"
+                            data-name="Kisonli L-1030 Speaker Komputer/Laptop Lampu LED" data-price="109999"
+                            data-category="electronics" data-image="assets/images/speaker_kisonli_l1030.jpg">
+                            <i class="fas fa-shopping-cart"></i> Keranjang
+                        </button>
+                        <button class="buy-now" data-id="product12"
+                            data-name="Kisonli L-1030 Speaker Komputer/Laptop Lampu LED" data-price="109999"
+                            data-category="electronics" data-image="assets/images/speaker_kisonli_l1030.jpg">
+                            Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Tentang Kami</h3>
+                <p>Yupita Shop adalah toko online terpercaya yang menyediakan berbagai produk berkualitas dengan harga
+                    terjangkau.</p>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/share/19qBWdZro1/"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/vallzen_?igsh=MTF2M2Rwemx4YThqdA=="><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@vallzen._?_t=ZS-8x7EWWICiZU&_r=1"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://youtube.com/@santuytv?si=611tPgcs0aF-Wj4y"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Layanan</h3>
+                <ul>
+                    <li><a href="https://wa.me/628990023990?text=Hallo Yupita Shop saya butuh bantuan">Pusat Bantuan</a>
+                    </li>
+                    <li><a href="carabelanjatoko.html">Cara Pembelian</a></li>
+                    <li><a href="syaratketentuan.html">Syarat & Ketentuan</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Kontak</h3>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> Jl. H. Nimun, Kota Bekasi, Jawa Barat, Indonesia.
+                    </li>
+                    <li><i class="fas fa-phone"></i> +62 899 0023 990</li>
+                    <li><i class="fas fa-envelope"></i> naufal231105@gmail.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Yupita Shop. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- QUICK VIEW MODAL -->
+    <div id="quickViewModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="quickViewContent" class="quick-view-content">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- KERANJANG MODAL -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-shopping-cart"></i> Keranjang Belanja</h2>
+            <div class="select-all-container">
+                <input type="checkbox" id="selectAllItems">
+                <label for="selectAllItems">Pilih Semua</label>
+            </div>
+            <div id="cartItems" class="cart-items">
+                <!-- Item keranjang akan dimasukkan di sini oleh JavaScript -->
+            </div>
+            <div class="cart-summary">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cartTotal">Rp. 0</span>
+                </div>
+                <div class="cart-actions">
+                    <a href="checkout.html" id="checkoutLink" class="checkout-button">
+                        <i class="fas fa-credit-card"></i> Checkout
+                    </a>
+                    <button id="clearCartButton" class="clear-button">
+                        <i class="fas fa-trash"></i> Kosongkan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="notificationToast" class="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+
+    <script>
+        // Daftar produk yang tersedia di toko dengan ID produk
+        const products = [
+            {
+                id: "product1",
+                name: "Aerostreet X Doraemon White Blue Limited Edition - Sepatu Sneakers Casual",
+                price: 229999,
+                category: "fashion",
+                description: "Sepatu Aerostreet kolaborasi dengan Doraemon edisi terbatas. Bahan premium dengan sol yang nyaman untuk dipakai sehari-hari.",
+                details: "Bahan: Kanvas Premium | Warna: Putih Biru | Ukuran: 38-44",
+                image: "assets/images/sepatu_aerostreet_doraemon_white_blue.jpg",
+                hasSize: true,
+                sizes: ["38", "39", "40", "41", "42", "43", "44"],
+                rating: 4.5,
+                reviewCount: 23
+            },
+            {
+                id: "product2",
+                name: "Aerostreet X Gibran Rakabuming Raka Season 2 - Sepatu Sneakers Casual",
+                price: 249999,
+                category: "fashion",
+                description: "Sepatu Aerostreet kolaborasi dengan Gibran Rakabuming Raka season 2. Desain eksklusif dengan bahan berkualitas tinggi.",
+                details: "Bahan: Kanvas Premium | Warna: Hitam Merah | Ukuran: 38-44",
+                image: "assets/images/sepatu_aerostreet_gibran_s2.jpg",
+                hasSize: true,
+                sizes: ["38", "39", "40", "41", "42", "43", "44"],
+                rating: 4,
+                reviewCount: 28
+            },
+            {
+                id: "product3",
+                name: "Aerostreet Broklyn Series (3 Colors) - Sepatu Sneakers Casual",
+                price: 179999,
+                category: "fashion",
+                description: "Sepatu Aerostreet Broklyn Series dengan 3 pilihan warna. Nyaman digunakan sehari-hari dengan desain yang stylish.",
+                details: "Bahan: Kanvas | Warna: Merah, Kuning, Hijau | Ukuran: 38-44",
+                image: "assets/images/sepatu_broklyn_series.jpg",
+                hasSize: true,
+                sizes: ["38", "39", "40", "41", "42", "43", "44"],
+                hasColor: true,
+                colors: ["Merah", "Kuning", "Hijau"],
+                rating: 5,
+                reviewCount: 99
+            },
+            {
+                id: "product4",
+                name: "Hoodie Hexsys Ryushiden Original Full Bordir Cowok",
+                price: 249999,
+                category: "fashion",
+                description: "Hoodie Hexsys Ryushiden dengan bahan premium dan bordir eksklusif. Nyaman dipakai dan tahan lama.",
+                details: "Bahan: Katun Fleece | Warna: Hitam | Ukuran: S-XXL",
+                image: "assets/images/hoodie_hexsys_ryushiden.jpg",
+                hasSize: true,
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                rating: 4.5,
+                reviewCount: 21
+            },
+            {
+                id: "product5",
+                name: "Headset Gaming Rexus Vonix F30 RGB ORIGINAL",
+                price: 181999,
+                category: "electronics",
+                description: "Headset gaming dengan suara surround 7.1, mic yang jernih, dan lampu RGB yang dapat disesuaikan.",
+                details: "Tipe: Over-ear | Koneksi: Kabel USB | Fitur: Mic, RGB, Volume Control",
+                image: "assets/images/headset_rexus_vonix_f30.jpg",
+                rating: 4,
+                reviewCount: 50
+            },
+            {
+                id: "product6",
+                name: "Helm Halfface NJS Kairoz Stone grey ORIGINAL",
+                price: 799999,
+                category: "accessories",
+                description: "Helm half face dengan desain sporty dan perlindungan maksimal. Bahan berkualitas tinggi dan nyaman dipakai.",
+                details: "Bahan: ABS + EPS | Warna: Stone Grey | Ukuran: M, L, XL",
+                image: "assets/images/helm_njs_kairoz_stone_grey.jpg",
+                hasSize: true,
+                sizes: ["M", "L", "XL"],
+                rating: 5,
+                reviewCount: 55
+            },
+            {
+                id: "product7",
+                name: "Jaket Varisty Deliwafa Fortes Fortuna Adiuavat Tiger",
+                price: 449999,
+                category: "fashion",
+                description: "Jaket varisty dengan desain eksklusif dan bahan berkualitas tinggi. Cocok untuk gaya kasual maupun semi-formal.",
+                details: "Bahan: Denim | Warna: Biru | Ukuran: S-XXL",
+                image: "assets/images/jaket_varisty_deliwafa.jpg",
+                hasSize: true,
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                rating: 4,
+                reviewCount: 34
+            },
+            {
+                id: "product8",
+                name: "Intercom Helm Gearelec DK02 IPX7 Tahan Air",
+                price: 179999,
+                category: "accessories",
+                description: "Intercom helm dengan koneksi bluetooth, tahan air, dan jarak jangkau hingga 500 meter.",
+                details: "Koneksi: Bluetooth | Jarak: 500m | Fitur: Tahan Air IPX7",
+                image: "assets/images/intercom_gearelec_dk02.jpg",
+                rating: 3.5,
+                reviewCount: 47
+            },
+            {
+                id: "product9",
+                name: "Helm Halfface JPX Supreme Hitam Glossy ORIGINAL",
+                price: 299999,
+                category: "accessories",
+                description: "Helm half face dengan desain stylish dan perlindungan optimal. Finishing glossy yang elegan.",
+                details: "Bahan: ABS + EPS | Warna: Hitam Glossy | Ukuran: M, L",
+                image: "assets/images/helm_jpx_supreme_black.jpg",
+                hasSize: true,
+                sizes: ["M", "L"],
+                rating: 5,
+                reviewCount: 68
+            },
+            {
+                id: "product10",
+                name: "Sarung Tangan Daymoton Half Series Protector dan Anti Slip",
+                price: 59999,
+                category: "accessories",
+                description: "Sarung tangan berkualitas dengan proteksi dan grip yang baik. Nyaman dipakai untuk berkendara.",
+                details: "Bahan: Kulit Sintetis | Warna: Hitam | Ukuran: M, L",
+                image: "assets/images/sarung_tangan_daymoton.jpg",
+                hasSize: true,
+                sizes: ["M", "L"],
+                rating: 4,
+                reviewCount: 56
+            },
+            {
+                id: "product11",
+                name: "Fan Cooler GAMEN GMR02 Wireless ORIGINAL",
+                price: 149999,
+                category: "electronics",
+                description: "Kipas pendingin laptop wireless dengan desain portabel dan daya tahan baterai yang lama.",
+                details: "Daya: USB/Wireless | Kecepatan: 3 Level | Baterai: 2000mAh",
+                image: "assets/images/fan_cooler_gamen_gmr02.jpg",
+                rating: 3.5,
+                reviewCount: 78
+            },
+            {
+                id: "product12",
+                name: "Kisonli L-1030 Speaker Komputer/Laptop Lampu LED",
+                price: 109999,
+                category: "electronics",
+                description: "Speaker komputer dengan suara jernih dan lampu LED yang dapat disesuaikan. Koneksi USB dan AUX.",
+                details: "Output: 5W | Koneksi: USB + AUX | Fitur: LED RGB",
+                image: "assets/images/speaker_kisonli_l1030.jpg",
+                rating: 4,
+                reviewCount: 42
+            }
+        ];
+
+        // Fungsi untuk mengelola keranjang
+        function CartManager() {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            const CART_KEY = `yupita_shop_cart_${loggedInUser}`;
+            const CHECKOUT_KEY = 'yupita_shop_checkout';
+
+            // Dapatkan keranjang dari localStorage
+            function getCart() {
+                const cart = localStorage.getItem(CART_KEY);
+                return cart ? JSON.parse(cart) : [];
+            }
+
+            // Simpan keranjang ke localStorage
+            function saveCart(cart) {
+                localStorage.setItem(CART_KEY, JSON.stringify(cart));
+                updateCartCount();
+            }
+
+            // Tambahkan produk ke keranjang
+            function addToCart(productId, productName, productPrice, productCategory, productImage) {
+                // Cek apakah produk memiliki ukuran/warna
+                const product = products.find(p => p.id === productId);
+                let size = '';
+                let color = '';
+
+                if (product && product.hasSize) {
+                    const sizeSelect = document.querySelector(`.size-select[data-id="${productId}"]`);
+                    size = sizeSelect ? sizeSelect.value : '';
+                    if (!size) {
+                        showNotification('Harap pilih ukuran terlebih dahulu');
+                        return false;
+                    }
+                }
+
+                if (product && product.hasColor) {
+                    const colorSelect = document.querySelector(`.color-select[data-id="${productId}"]`);
+                    color = colorSelect ? colorSelect.value : '';
+                    if (!color) {
+                        showNotification('Harap pilih warna terlebih dahulu');
+                        return false;
+                    }
+                }
+
+                const cart = getCart();
+                const existingItem = cart.find(item =>
+                    item.id === productId &&
+                    item.size === size &&
+                    item.color === color
+                );
+
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({
+                        id: productId,
+                        name: productName,
+                        price: productPrice,
+                        category: productCategory,
+                        image: productImage,
+                        quantity: 1,
+                        size: size,
+                        color: color
+                    });
+                }
+
+                saveCart(cart);
+                showNotification(`${productName} ditambahkan ke keranjang`);
+                return true;
+            }
+
+            // Fungsi untuk langsung checkout produk (tanpa mengubah keranjang)
+            function directCheckout(productId, productName, productPrice, productCategory, productImage) {
+                // Cek apakah produk memiliki ukuran/warna
+                const product = products.find(p => p.id === productId);
+                let size = '';
+                let color = '';
+
+                if (product && product.hasSize) {
+                    const sizeSelect = document.querySelector(`.size-select[data-id="${productId}"]`);
+                    size = sizeSelect ? sizeSelect.value : '';
+                    if (!size) {
+                        showNotification('Harap pilih ukuran terlebih dahulu');
+                        return false;
+                    }
+                }
+
+                if (product && product.hasColor) {
+                    const colorSelect = document.querySelector(`.color-select[data-id="${productId}"]`);
+                    color = colorSelect ? colorSelect.value : '';
+                    if (!color) {
+                        showNotification('Harap pilih warna terlebih dahulu');
+                        return false;
+                    }
+                }
+
+                const checkoutItem = [{
+                    id: productId,
+                    name: productName,
+                    price: productPrice,
+                    category: productCategory,
+                    image: productImage,
+                    quantity: 1,
+                    size: size,
+                    color: color
+                }];
+
+                // Simpan data checkout ke localStorage terpisah
+                localStorage.setItem(CHECKOUT_KEY, JSON.stringify(checkoutItem));
+                window.location.href = 'checkout.html';
+                return true;
+            }
+
+            // Hapus item dari keranjang
+            function removeFromCart(productId) {
+                const cart = getCart().filter(item => item.id !== productId);
+                saveCart(cart);
+                showNotification('Produk dihapus dari keranjang');
+            }
+
+            // Update kuantitas item
+            function updateQuantity(productId, newQuantity) {
+                const cart = getCart();
+                const item = cart.find(item => item.id === productId);
+
+                if (item) {
+                    if (newQuantity > 0) {
+                        item.quantity = newQuantity;
+                    } else {
+                        return removeFromCart(productId);
+                    }
+                }
+
+                saveCart(cart);
+            }
+
+            // Kosongkan keranjang
+            function clearCart() {
+                saveCart([]);
+                showNotification('Keranjang dikosongkan');
+                renderCart();
+            }
+
+            // Hitung total harga
+            function calculateTotal() {
+                const cart = getCart();
+                return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            }
+
+            // Update tampilan jumlah item di navbar
+            function updateCartCount() {
+                const cart = getCart();
+                const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+                document.getElementById('cartCount').textContent = count;
+            }
+
+            // Render isi keranjang di modal
+            function renderCart() {
+                const cart = getCart();
+                const cartItemsElement = document.getElementById('cartItems');
+                const cartTotalElement = document.getElementById('cartTotal');
+                const selectAllCheckbox = document.getElementById('selectAllItems');
+
+                if (cart.length === 0) {
+                    cartItemsElement.innerHTML = '<div class="empty-cart"><i class="fas fa-shopping-cart"></i><p>Keranjang belanja kosong</p></div>';
+                    cartTotalElement.textContent = 'Rp. 0';
+                    document.getElementById('checkoutLink').classList.add('disabled');
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.disabled = true;
+                    return;
+                }
+
+                selectAllCheckbox.disabled = false;
+                document.getElementById('checkoutLink').classList.remove('disabled');
+
+                cartItemsElement.innerHTML = cart.map(item => {
+                    let details = '';
+                    if (item.size) details += `Ukuran: ${item.size}`;
+                    if (item.color) details += details ? ` | Warna: ${item.color}` : `Warna: ${item.color}`;
+
+                    return `
+                            <div class="cart-item" data-id="${item.id}" data-size="${item.size || ''}" data-color="${item.color || ''}">
+                                <input type="checkbox" class="cart-item-checkbox" checked>
+                                <div class="item-image">
+                                    <img src="${item.image}" alt="${item.name}">
+                                </div>
+                                <div class="item-details">
+                                    <h4>${item.name}</h4>
+                                    ${details ? `<p class="item-detail">${details}</p>` : ''}
+                                    <p class="item-price">Rp. ${item.price.toLocaleString('id-ID')}</p>
+                                    <div class="item-controls">
+                                        <button class="quantity-btn minus" data-id="${item.id}">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" value="${item.quantity}" min="1" class="quantity-input" data-id="${item.id}">
+                                        <button class="quantity-btn plus" data-id="${item.id}">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                        <button class="remove-btn" data-id="${item.id}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="item-subtotal">
+                                    Rp. ${(item.price * item.quantity).toLocaleString('id-ID')}
+                                </div>
+                            </div>
+                        `;
+                }).join('');
+
+                // Hitung total berdasarkan item yang dipilih
+                updateSelectedTotal();
+
+                // Event listener untuk checkbox "Pilih Semua"
+                selectAllCheckbox.addEventListener('change', function () {
+                    const checkboxes = document.querySelectorAll('.cart-item-checkbox');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                    updateSelectedTotal();
+                });
+
+                // Event listener untuk checkbox per item
+                document.querySelectorAll('.cart-item-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', function () {
+                        // Update status "Pilih Semua"
+                        const allChecked = [...document.querySelectorAll('.cart-item-checkbox')].every(cb => cb.checked);
+                        selectAllCheckbox.checked = allChecked;
+                        updateSelectedTotal();
+                    });
+                });
+            }
+
+            // Fungsi untuk menghitung total berdasarkan item yang dipilih
+            function updateSelectedTotal() {
+                const cart = getCart();
+                let total = 0;
+
+                document.querySelectorAll('.cart-item').forEach(itemEl => {
+                    const checkbox = itemEl.querySelector('.cart-item-checkbox');
+                    if (checkbox.checked) {
+                        const itemId = itemEl.dataset.id;
+                        const itemSize = itemEl.dataset.size || '';
+                        const itemColor = itemEl.dataset.color || '';
+
+                        const item = cart.find(i =>
+                            i.id === itemId &&
+                            i.size === itemSize &&
+                            i.color === itemColor
+                        );
+
+                        if (item) {
+                            total += item.price * item.quantity;
+                            itemEl.classList.add('selected-item');
+                        } else {
+                            itemEl.classList.remove('selected-item');
+                        }
+                    } else {
+                        itemEl.classList.remove('selected-item');
+                    }
+                });
+
+                document.getElementById('cartTotal').textContent = `Rp. ${total.toLocaleString('id-ID')}`;
+            }
+
+            return {
+                getCart,
+                addToCart,
+                directCheckout,
+                removeFromCart,
+                updateQuantity,
+                clearCart,
+                updateCartCount,
+                renderCart,
+                updateSelectedTotal
+            };
+        }
+
+        // Tampilkan notifikasi toast
+        function showNotification(message) {
+            const toast = document.getElementById('notificationToast');
+            const toastMessage = document.getElementById('toastMessage');
+
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Tampilkan quick view modal
+        function showQuickView(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const quickViewContent = document.getElementById('quickViewContent');
+
+            // Buat rating stars
+            const stars = [];
+            const fullStars = Math.floor(product.rating);
+            const hasHalfStar = product.rating % 1 >= 0.5;
+
+            for (let i = 1; i <= 5; i++) {
+                if (i <= fullStars) {
+                    stars.push('<i class="fas fa-star"></i>');
+                } else if (i === fullStars + 1 && hasHalfStar) {
+                    stars.push('<i class="fas fa-star-half-alt"></i>');
+                } else {
+                    stars.push('<i class="far fa-star"></i>');
+                }
+            }
+
+            quickViewContent.innerHTML = `
+                <div class="quick-view-image">
+                    <img src="${product.image}" alt="${product.name}">
+                </div>
+                <div class="quick-view-details">
+                    <h3>${product.name}</h3>
+                    <div class="product-rating">
+                        ${stars.join('')}
+                        <span>(${product.reviewCount})</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">Rp ${product.price.toLocaleString('id-ID')}</span>
+                    </div>
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-specs">
+                        <h4>Spesifikasi:</h4>
+                        <p>${product.details}</p>
+                    </div>
+                    ${product.hasSize ? `
+                    <div class="quick-view-option">
+                        <label>Ukuran:</label>
+                        <select class="quick-view-size" data-id="${product.id}">
+                            <option value="">Pilih Ukuran</option>
+                            ${product.sizes.map(size => `<option value="${size}">${size}</option>`).join('')}
+                        </select>
+                    </div>` : ''}
+                    ${product.hasColor ? `
+                    <div class="quick-view-option">
+                        <label>Warna:</label>
+                        <select class="quick-view-color" data-id="${product.id}">
+                            <option value="">Pilih Warna</option>
+                            ${product.colors.map(color => `<option value="${color}">${color}</option>`).join('')}
+                        </select>
+                    </div>` : ''}
+                    <div class="quick-view-actions">
+                        <button class="add-to-cart-btn" data-id="${product.id}" data-name="${product.name}" data-price="${product.price}" data-category="${product.category}" data-image="${product.image}">
+                            <i class="fas fa-shopping-cart"></i> Keranjang
+                        </button>
+                        <button class="buy-now-btn" data-id="${product.id}" data-name="${product.name}" data-price="${product.price}" data-category="${product.category}" data-image="${product.image}">
+                            Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Add event listener to quick view add to cart button
+            quickViewContent.querySelector('.add-to-cart-btn').addEventListener('click', function () {
+                const productId = this.getAttribute('data-id');
+                const productName = this.getAttribute('data-name');
+                const productPrice = parseInt(this.getAttribute('data-price'));
+                const productCategory = this.getAttribute('data-category');
+                const productImage = this.getAttribute('data-image');
+
+                // Set size/color from quick view to main product
+                const product = products.find(p => p.id === productId);
+                if (product && product.hasSize) {
+                    const quickViewSize = quickViewContent.querySelector(`.quick-view-size[data-id="${productId}"]`);
+                    const mainSizeSelect = document.querySelector(`.size-select[data-id="${productId}"]`);
+                    if (quickViewSize && mainSizeSelect) {
+                        mainSizeSelect.value = quickViewSize.value;
+                    }
+                }
+
+                if (product && product.hasColor) {
+                    const quickViewColor = quickViewContent.querySelector(`.quick-view-color[data-id="${productId}"]`);
+                    const mainColorSelect = document.querySelector(`.color-select[data-id="${productId}"]`);
+                    if (quickViewColor && mainColorSelect) {
+                        mainColorSelect.value = quickViewColor.value;
+                    }
+                }
+
+                const success = cartManager.addToCart(productId, productName, productPrice, productCategory, productImage);
+                if (success) {
+                    document.getElementById('quickViewModal').style.display = 'none';
+                }
+            });
+
+            // Add event listener to quick view buy now button
+            quickViewContent.querySelector('.buy-now-btn').addEventListener('click', function () {
+                const productId = this.getAttribute('data-id');
+                const productName = this.getAttribute('data-name');
+                const productPrice = parseInt(this.getAttribute('data-price'));
+                const productCategory = this.getAttribute('data-category');
+                const productImage = this.getAttribute('data-image');
+
+                // Set size/color from quick view to main product
+                const product = products.find(p => p.id === productId);
+                if (product && product.hasSize) {
+                    const quickViewSize = quickViewContent.querySelector(`.quick-view-size[data-id="${productId}"]`);
+                    const mainSizeSelect = document.querySelector(`.size-select[data-id="${productId}"]`);
+                    if (quickViewSize && mainSizeSelect) {
+                        mainSizeSelect.value = quickViewSize.value;
+                    }
+                }
+
+                if (product && product.hasColor) {
+                    const quickViewColor = quickViewContent.querySelector(`.quick-view-color[data-id="${productId}"]`);
+                    const mainColorSelect = document.querySelector(`.color-select[data-id="${productId}"]`);
+                    if (quickViewColor && mainColorSelect) {
+                        mainColorSelect.value = quickViewColor.value;
+                    }
+                }
+
+                const success = cartManager.directCheckout(productId, productName, productPrice, productCategory, productImage);
+                if (success) {
+                    document.getElementById('quickViewModal').style.display = 'none';
+                }
+            });
+
+            document.getElementById('quickViewModal').style.display = 'block';
+        }
+
+        // Filter produk berdasarkan kategori
+        function filterProducts(category) {
+            const productCards = document.querySelectorAll('.product-card');
+
+            productCards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Update active filter button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.category === category);
+            });
+        }
+
+        // Inisialisasi keranjang
+        const cartManager = CartManager();
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function () {
+            // Cek login user
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+
+            if (loggedInUser && !users.some(u => u.username === loggedInUser)) {
+                showNotification('Akun Anda tidak ditemukan atau telah dihapus');
+                localStorage.removeItem('loggedInUser');
+                setTimeout(() => window.location.href = 'index.html', 2000);
+                return;
+            }
+
+            if (loggedInUser) {
+                document.getElementById('loggedInUser').textContent = 'Halo, ' + loggedInUser;
+            } else {
+                window.location.href = 'index.html';
+            }
+
+            // Fungsi untuk menampilkan popup konfirmasi
+            function showConfirmation(title, message, callback) {
+                const popup = document.getElementById('confirmationPopup');
+                const titleEl = document.getElementById('confirmationTitle');
+                const messageEl = document.getElementById('confirmationMessage');
+                const icon = document.getElementById('confirmationIcon');
+
+                titleEl.textContent = title;
+                messageEl.textContent = message;
+                popup.classList.add('show');
+
+                const confirmBtn = document.getElementById('confirmLogout');
+                const cancelBtn = document.getElementById('cancelLogout');
+
+                function handleConfirm() {
+                    callback(true);
+                    popup.classList.remove('show');
+                    confirmBtn.removeEventListener('click', handleConfirm);
+                    cancelBtn.removeEventListener('click', handleCancel);
+                }
+
+                function handleCancel() {
+                    callback(false);
+                    popup.classList.remove('show');
+                    confirmBtn.removeEventListener('click', handleConfirm);
+                    cancelBtn.removeEventListener('click', handleCancel);
+                }
+
+                confirmBtn.addEventListener('click', handleConfirm);
+                cancelBtn.addEventListener('click', handleCancel);
+            }
+
+            // Logout button (ganti yang lama dengan ini)
+            document.getElementById('logoutButton').addEventListener('click', function (e) {
+                e.preventDefault();
+                showConfirmation('Konfirmasi Logout', 'Apakah Anda yakin ingin logout?', (confirmed) => {
+                    if (confirmed) {
+                        localStorage.removeItem('loggedInUser');
+                        showNotification('Anda telah logout');
+                        setTimeout(() => window.location.href = 'index.html', 1500);
+                    }
+                });
+            });
+
+            // Update jumlah keranjang
+            cartManager.updateCartCount();
+
+            // Tombol tambah ke keranjang
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', function () {
+                    const productId = this.getAttribute('data-id');
+                    const productName = this.getAttribute('data-name');
+                    const productPrice = parseInt(this.getAttribute('data-price'));
+                    const productCategory = this.getAttribute('data-category');
+                    const productImage = this.getAttribute('data-image');
+
+                    cartManager.addToCart(productId, productName, productPrice, productCategory, productImage);
+                });
+            });
+
+            // Tombol beli sekarang
+            document.querySelectorAll('.buy-now').forEach(button => {
+                button.addEventListener('click', function () {
+                    const productId = this.getAttribute('data-id');
+                    const productName = this.getAttribute('data-name');
+                    const productPrice = parseInt(this.getAttribute('data-price'));
+                    const productCategory = this.getAttribute('data-category');
+                    const productImage = this.getAttribute('data-image');
+
+                    cartManager.directCheckout(productId, productName, productPrice, productCategory, productImage);
+                });
+            });
+
+            // Tombol keranjang
+            document.getElementById('cartButton').addEventListener('click', function (e) {
+                e.preventDefault();
+                document.getElementById('cartModal').style.display = 'block';
+                cartManager.renderCart();
+            });
+
+            // Close modal
+            document.querySelectorAll('.close').forEach(closeBtn => {
+                closeBtn.addEventListener('click', function () {
+                    this.closest('.modal').style.display = 'none';
+                });
+            });
+
+            // Kosongkan keranjang
+            document.getElementById('clearCartButton').addEventListener('click', function () {
+                cartManager.clearCart();
+            });
+
+            // Checkout dari keranjang
+            document.getElementById('checkoutLink').addEventListener('click', function (e) {
+                const cart = cartManager.getCart();
+                if (cart.length === 0) {
+                    e.preventDefault();
+                    showNotification('Keranjang belanja kosong');
+                    return;
+                }
+
+                // Ambil hanya item yang dicentang
+                const selectedItems = [];
+                document.querySelectorAll('.cart-item').forEach(itemEl => {
+                    const checkbox = itemEl.querySelector('.cart-item-checkbox');
+                    if (checkbox.checked) {
+                        const itemId = itemEl.dataset.id;
+                        const itemSize = itemEl.dataset.size || '';
+                        const itemColor = itemEl.dataset.color || '';
+
+                        const item = cart.find(i =>
+                            i.id === itemId &&
+                            i.size === itemSize &&
+                            i.color === itemColor
+                        );
+
+                        if (item) {
+                            selectedItems.push(item);
+                        }
+                    }
+                });
+
+                if (selectedItems.length === 0) {
+                    e.preventDefault();
+                    showNotification('Pilih minimal 1 item untuk checkout');
+                    return;
+                }
+
+                // Simpan data checkout dari item yang dipilih
+                localStorage.setItem('yupita_shop_checkout', JSON.stringify(selectedItems));
+
+                // Lanjutkan ke halaman checkout
+                window.location.href = 'checkout.html';
+            });
+
+            // Delegasi event untuk tombol di dalam keranjang
+            document.getElementById('cartItems').addEventListener('click', function (e) {
+                if (e.target.closest('.remove-btn')) {
+                    const productId = e.target.closest('.remove-btn').getAttribute('data-id');
+                    cartManager.removeFromCart(productId);
+                    cartManager.renderCart();
+                } else if (e.target.closest('.quantity-btn')) {
+                    const btn = e.target.closest('.quantity-btn');
+                    const productId = btn.getAttribute('data-id');
+                    const input = btn.parentElement.querySelector('.quantity-input');
+                    let quantity = parseInt(input.value);
+
+                    if (btn.classList.contains('plus')) {
+                        quantity += 1;
+                    } else if (btn.classList.contains('minus')) {
+                        quantity -= 1;
+                    }
+
+                    input.value = quantity;
+                    cartManager.updateQuantity(productId, quantity);
+                    cartManager.renderCart();
+                }
+            });
+
+            // Update quantity ketika input diubah manual
+            document.getElementById('cartItems').addEventListener('change', function (e) {
+                if (e.target.classList.contains('quantity-input')) {
+                    const productId = e.target.getAttribute('data-id');
+                    const quantity = parseInt(e.target.value) || 1;
+                    cartManager.updateQuantity(productId, quantity);
+                    cartManager.renderCart();
+                }
+            });
+
+            // Quick view button
+            document.querySelectorAll('.quick-view').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const productId = this.getAttribute('data-id');
+                    showQuickView(productId);
+                });
+            });
+
+            // Filter produk
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const category = this.getAttribute('data-category');
+                    filterProducts(category);
+                });
+            });
+
+            // Hamburger menu untuk mobile
+            document.querySelector('.hamburger-menu').addEventListener('click', function () {
+                document.querySelector('.navbar-buttons').classList.toggle('show');
+            });
+
+            // Close modal ketika klik di luar
+            window.addEventListener('click', function (event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            });
+        });
+
+        // Fungsi pencarian produk
+        function searchProduct(event) {
+            event.preventDefault();
+            const searchInput = document.getElementById('search-barang').value.toLowerCase();
+
+            if (!searchInput.trim()) {
+                showNotification('Masukkan kata kunci pencarian');
+                return;
+            }
+
+            const result = products.find(product =>
+                product.name.toLowerCase().includes(searchInput)
+            );
+
+            if (result) {
+                const productElement = document.getElementById(result.id);
+                if (productElement) {
+                    // Scroll ke produk
+                    productElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                    // Highlight produk
+                    productElement.classList.add("highlight");
+                    setTimeout(() => {
+                        productElement.classList.remove("highlight");
+                    }, 2000);
+                }
+            } else {
+                showNotification('Produk tidak ditemukan');
+            }
+        }
+    </script>
+
+    <!-- Confirmation Popup -->
+    <div id="confirmationPopup" class="confirmation-popup">
+        <div class="confirmation-content">
+            <i id="confirmationIcon" class="fas fa-question-circle confirmation-icon"></i>
+            <h3 id="confirmationTitle" class="confirmation-title">Konfirmasi Logout</h3>
+            <p id="confirmationMessage" class="confirmation-message">Apakah Anda yakin ingin logout?</p>
+            <div class="confirmation-buttons">
+                <button id="confirmLogout" class="confirmation-btn confirm">OK</button>
+                <button id="cancelLogout" class="confirmation-btn cancel">Batal</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

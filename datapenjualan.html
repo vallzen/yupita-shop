@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Penjualan - Admin Yupita Shop</title>
+    <link rel="stylesheet" href="assets/css/stylekelolauser.css">
+    <link rel="stylesheet" href="assets/css/stylestatistik.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        /* Notification Popup Styles */
+        .notification-popup {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #48bb78;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            transform: translateX(150%);
+            transition: transform 0.3s ease-out;
+        }
+
+        .notification-popup.show {
+            transform: translateX(0);
+        }
+
+        .notification-popup.error {
+            background-color: #f56565;
+        }
+
+        .notification-popup i {
+            font-size: 1.5rem;
+        }
+
+        .notification-popup .notification-content {
+            flex: 1;
+        }
+
+        .notification-popup .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 10px;
+        }
+
+        /* Confirmation Popup Styles */
+        .confirmation-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .confirmation-popup.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .confirmation-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .confirmation-popup.show .confirmation-content {
+            transform: translateY(0);
+        }
+
+        .confirmation-icon {
+            font-size: 3rem;
+            color: #4299e1;
+            margin-bottom: 1rem;
+        }
+
+        .confirmation-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2d3748;
+        }
+
+        .confirmation-message {
+            color: #4a5568;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .confirmation-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .confirmation-btn.confirm {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+        }
+
+        .confirmation-btn.cancel {
+            background-color: #f8fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .confirmation-btn.confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(66, 153, 225, 0.3);
+        }
+
+        .confirmation-btn.cancel:hover {
+            background-color: #edf2f7;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Completed Orders Table Styles */
+        .completed-orders {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.8rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .completed-orders h2 {
+            color: #2b6cb0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .orders-table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #edf2f7;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.95rem;
+        }
+
+        .orders-table th,
+        .orders-table td {
+            padding: 1rem 1.2rem;
+            text-align: left;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .orders-table th {
+            background-color: #f8fafc;
+            color: #4a5568;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .orders-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* New Search Box Styles */
+        .search-filter {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            background-color: #f8fafc;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+            background-color: white;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
+
+        /* Stats Summary Styles */
+        .stats-summary {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stats-summary h3 {
+            color: #2b6cb0;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .stats-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-item {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-item h4 {
+            color: #4a5568;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .stat-item .product-list {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .stat-item .product-list li {
+            margin-bottom: 0.3rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Filter Section Styles */
+        .filter-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-section label {
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .filter-section select,
+        .filter-section input {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .filter-section select:focus,
+        .filter-section input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+        }
+
+        .filter-section button {
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .filter-section button:hover {
+            background: linear-gradient(135deg, #3182ce 0%, #2b6cb0 100%);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+
+            .orders-table th,
+            .orders-table td {
+                padding: 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .search-filter {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+        }
+
+        /* Export Button Styles */
+        .export-btn {
+            padding: 0.8rem 1.2rem;
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .export-btn:hover {
+            background: linear-gradient(135deg, #2f855a 0%, #276749 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(56, 161, 105, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Notification Popup -->
+    <div id="notificationPopup" class="notification-popup">
+        <i class="fas fa-check-circle"></i>
+        <div class="notification-content"></div>
+        <button class="notification-close">&times;</button>
+    </div>
+
+    <!-- Confirmation Popup -->
+    <div id="confirmationPopup" class="confirmation-popup">
+        <div class="confirmation-content">
+            <i id="confirmationIcon" class="fas fa-question-circle confirmation-icon"></i>
+            <h3 id="confirmationTitle" class="confirmation-title">Konfirmasi</h3>
+            <p id="confirmationMessage" class="confirmation-message">Apakah Anda yakin ingin melakukan tindakan ini?</p>
+            <div class="confirmation-buttons">
+                <button id="confirmAction" class="confirmation-btn confirm">OK</button>
+                <button id="cancelAction" class="confirmation-btn cancel">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fixed Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-user-cog"></i>
+                    <h1>Admin Panel</h1>
+                </div>
+                <nav class="admin-nav">
+                    <ul>
+                        <li><a href="kelolauser.html"><i class="fas fa-users"></i> Kelola User</a></li>
+                        <li class="active"><a href="datapenjualan.html"><i class="fas fa-chart-line"></i> Data Penjualan</a>
+                        </li>
+                        <li><a href="pesanancustomer.html"><i class="fas fa-shopping-cart"></i> Pesanan Customer</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="admin-info">
+                    <div class="admin-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="admin-details">
+                        <span id="currentAdminName"></span>
+                        <small>Administrator</small>
+                    </div>
+                    <button id="logoutAdmin" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Completed Orders -->
+            <section class="completed-orders">
+                <h2>Data Pesanan Selesai</h2>
+
+                <div class="search-filter">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchCompletedOrder"
+                            placeholder="Cari pesanan (No Pesanan, Nama Pelanggan, Email, Produk, dll)...">
+                    </div>
+                </div>
+
+                <!-- Filter Section -->
+                <div class="filter-section">
+                    <label for="startDate">Filter Tanggal:</label>
+                    <input type="date" id="startDate">
+
+                    <label for="endDate">s/d</label>
+                    <input type="date" id="endDate">
+
+                    <button id="applyFilterBtn">Terapkan</button>
+                    <button id="resetFilterBtn">Reset</button>
+                </div>
+
+                <!-- Export Button moved below filter section -->
+                <button id="exportBtn" class="export-btn">
+                    <i class="fas fa-file-export"></i> Ekspor Data
+                </button>
+
+                <!-- Stats Summary -->
+                <div class="stats-summary" id="statsSummary" style="display: none;">
+                    <h3>Statistik Pesanan</h3>
+                    <div class="stats-summary-grid">
+                        <div class="stat-item">
+                            <h4>Total Pesanan</h4>
+                            <p id="totalOrders">0</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>Total Pembayaran</h4>
+                            <p id="totalPayment">Rp 0</p>
+                            <ul class="product-list" id="paymentMethodList">
+                                <!-- Daftar metode pembayaran akan diisi oleh JavaScript -->
+                            </ul>
+                        </div>
+                        <div class="stat-item">
+                            <h4>Total Produk Terjual</h4>
+                            <p id="totalProductsSold">0</p>
+                            <ul class="product-list" id="productList">
+                                <!-- Daftar produk akan diisi oleh JavaScript -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="orders-table-container">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th width="10%">No Pesanan</th>
+                                <th width="12%">Nama Pelanggan</th>
+                                <th width="15%">Email</th>
+                                <th width="10%">No HP</th>
+                                <th width="15%">Alamat Pengiriman</th>
+                                <th width="15%">Produk</th>
+                                <th width="10%">Detail Waktu Pemesanan</th>
+                                <th width="10%">Total Pembayaran</th>
+                                <th width="8%">Pembayaran</th>
+                                <th width="5%">Pengiriman</th>
+                            </tr>
+                        </thead>
+                        <tbody id="completedOrdersTableBody">
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Notification functions
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notificationPopup');
+            const content = notification.querySelector('.notification-content');
+            const icon = notification.querySelector('i');
+
+            content.textContent = message;
+
+            if (isError) {
+                notification.classList.add('error');
+                icon.className = 'fas fa-exclamation-circle';
+            } else {
+                notification.classList.remove('error');
+                icon.className = 'fas fa-check-circle';
+            }
+
+            notification.classList.add('show');
+
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        function hideNotification() {
+            document.getElementById('notificationPopup').classList.remove('show');
+        }
+
+        // Confirmation functions
+        function showConfirmation(title, message, callback) {
+            const popup = document.getElementById('confirmationPopup');
+            const titleEl = document.getElementById('confirmationTitle');
+            const messageEl = document.getElementById('confirmationMessage');
+            const icon = document.getElementById('confirmationIcon');
+
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+
+            popup.classList.add('show');
+
+            const confirmBtn = document.getElementById('confirmAction');
+            const cancelBtn = document.getElementById('cancelAction');
+
+            function handleConfirm() {
+                callback(true);
+                popup.classList.remove('show');
+                confirmBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+            }
+
+            function handleCancel() {
+                callback(false);
+                popup.classList.remove('show');
+                confirmBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+            }
+
+            confirmBtn.addEventListener('click', handleConfirm);
+            cancelBtn.addEventListener('click', handleCancel);
+        }
+
+        // Close notification when clicking X
+        document.querySelector('.notification-close').addEventListener('click', hideNotification);
+
+        // Authentication check
+        if (!sessionStorage.getItem('adminAuthenticated')) {
+            window.location.href = 'loginadmin.html';
+        }
+
+        // Set admin name
+        document.getElementById('currentAdminName').textContent =
+            sessionStorage.getItem('adminUsername') || 'Admin';
+
+        // Logout function
+        document.getElementById('logoutAdmin').addEventListener('click', function () {
+            showConfirmation('Konfirmasi Logout', 'Apakah Anda yakin ingin logout?', (confirmed) => {
+                if (confirmed) {
+                    sessionStorage.removeItem('adminAuthenticated');
+                    sessionStorage.removeItem('adminUsername');
+                    window.location.href = 'loginadmin.html';
+                }
+            });
+        });
+
+        // Function to get status text
+        function getStatusText(status) {
+            switch (status) {
+                case 'processing': return 'Sedang Dikemas';
+                case 'packing': return 'Dalam Pengiriman';
+                case 'completed': return 'Pesanan Selesai';
+                case 'cancelled': return 'Dibatalkan';
+                default: return status;
+            }
+        }
+
+        // Function to get payment text
+        function getPaymentText(payment) {
+            switch (payment) {
+                case 'transfer': return 'Transfer Bank (BRI)';
+                case 'ewallet': return 'E-Wallet (Dana)';
+                default: return payment || 'Transfer Bank (BRI)';
+            }
+        }
+
+        // Function to format date for display
+        function formatDateForDisplay(dateString) {
+            if (!dateString) return '-';
+
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+
+            return date.toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Function to parse date string to Date object (improved)
+        function parseDate(dateString) {
+            if (!dateString) return null;
+
+            // Try parsing ISO format first
+            let date = new Date(dateString);
+            if (!isNaN(date.getTime())) return date;
+
+            // Try parsing Indonesian format (dd/mm/yyyy or dd-mm-yyyy)
+            const parts = dateString.split(/[/-]/);
+            if (parts.length === 3) {
+                // Handle day/month/year format
+                date = new Date(parts[2], parts[1] - 1, parts[0]);
+                if (!isNaN(date.getTime())) return date;
+            }
+
+            // Try parsing long date format (Indonesian)
+            const idMonths = {
+                'Januari': 0, 'Februari': 1, 'Maret': 2, 'April': 3, 'Mei': 4, 'Juni': 5,
+                'Juli': 6, 'Agustus': 7, 'September': 8, 'Oktober': 9, 'November': 10, 'Desember': 11
+            };
+
+            const longDateMatch = dateString.match(/(\d{1,2}) (\w+) (\d{4})/);
+            if (longDateMatch) {
+                const day = parseInt(longDateMatch[1]);
+                const month = idMonths[longDateMatch[2]];
+                const year = parseInt(longDateMatch[3]);
+                if (month !== undefined) {
+                    date = new Date(year, month, day);
+                    if (!isNaN(date.getTime())) return date;
+                }
+            }
+
+            // Try parsing from formatted date (e.g., "Senin, 01 Januari 2023 14:30:00")
+            const formattedMatch = dateString.match(/(\d{1,2}) (\w+) (\d{4}) (\d{1,2}):(\d{1,2}):(\d{1,2})/);
+            if (formattedMatch) {
+                const day = parseInt(formattedMatch[1]);
+                const month = idMonths[formattedMatch[2]];
+                const year = parseInt(formattedMatch[3]);
+                const hours = parseInt(formattedMatch[4]);
+                const minutes = parseInt(formattedMatch[5]);
+                const seconds = parseInt(formattedMatch[6]);
+
+                if (month !== undefined) {
+                    date = new Date(year, month, day, hours, minutes, seconds);
+                    if (!isNaN(date.getTime())) return date;
+                }
+            }
+
+            console.warn("Could not parse date:", dateString);
+            return null;
+        }
+
+        // Function to format date for notification
+        function formatDate(dateString) {
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+
+        // Function to normalize date for comparison (new function)
+        function normalizeDate(date) {
+            if (!date) return null;
+            if (typeof date === 'string') {
+                return parseDate(date);
+            }
+            return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        }
+
+        // Function to update stats summary
+        function updateStatsSummary(filteredOrders) {
+            const statsSummary = document.getElementById('statsSummary');
+
+            if (filteredOrders.length === 0) {
+                statsSummary.style.display = 'none';
+                return;
+            }
+
+            statsSummary.style.display = 'block';
+
+            // Calculate total orders
+            document.getElementById('totalOrders').textContent = filteredOrders.length;
+
+            // Calculate total payment and payment methods
+            const totalPayment = filteredOrders.reduce((sum, order) => sum + (order.total || 0), 0);
+            document.getElementById('totalPayment').textContent = `Rp ${totalPayment.toLocaleString('id-ID')}`;
+
+            // Calculate payment methods
+            const paymentMethods = {
+                'Transfer Bank (BRI)': 0,
+                'E-Wallet (Dana)': 0,
+                'COD (Bayar di Tempat)': 0
+            };
+
+            filteredOrders.forEach(order => {
+                const paymentMethod = order.paymentMethod || 'Transfer Bank (BRI)';
+                if (paymentMethods.hasOwnProperty(paymentMethod)) {
+                    paymentMethods[paymentMethod]++;
+                } else {
+                    paymentMethods[paymentMethod] = 1;
+                }
+            });
+
+            // Update payment method list
+            const paymentMethodList = document.getElementById('paymentMethodList');
+            paymentMethodList.innerHTML = '';
+
+            Object.entries(paymentMethods).forEach(([method, count]) => {
+                if (count > 0) {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span>${method}</span> <span>${count}x</span>`;
+                    paymentMethodList.appendChild(li);
+                }
+            });
+
+            // Calculate products sold
+            const productsSold = {};
+            let totalProducts = 0;
+
+            filteredOrders.forEach(order => {
+                if (order.items && order.items.length > 0) {
+                    order.items.forEach(item => {
+                        if (productsSold[item.name]) {
+                            productsSold[item.name] += item.quantity || 1;
+                        } else {
+                            productsSold[item.name] = item.quantity || 1;
+                        }
+                        totalProducts += item.quantity || 1;
+                    });
+                }
+            });
+
+            document.getElementById('totalProductsSold').textContent = totalProducts;
+
+            // Update product list
+            const productList = document.getElementById('productList');
+            productList.innerHTML = '';
+
+            Object.entries(productsSold).forEach(([name, quantity]) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>${name}</span> <span>${quantity}x</span>`;
+                productList.appendChild(li);
+            });
+        }
+
+        // Function to load completed orders (improved date filtering)
+        function loadCompletedOrders() {
+            const userOrders = JSON.parse(localStorage.getItem('userOrders')) || [];
+            const adminOrders = JSON.parse(localStorage.getItem('orders')) || [];
+            const completedOrdersTableBody = document.getElementById('completedOrdersTableBody');
+            completedOrdersTableBody.innerHTML = '';
+
+            // Get search term
+            const searchTerm = document.getElementById('searchCompletedOrder').value.toLowerCase();
+
+            // Get date filter values
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+
+            // Combine data from both sources
+            let combinedOrders = [];
+
+            // First get from userOrders
+            userOrders.forEach(userOrder => {
+                if (userOrder.status === 'completed') {
+                    const adminOrder = adminOrders.find(o => o.orderId === userOrder.orderId) || {};
+
+                    // Create a consistent date object for filtering
+                    const orderDate = parseDate(userOrder.date || adminOrder.date);
+                    const formattedDate = formatDateForDisplay(userOrder.date || adminOrder.date);
+
+                    combinedOrders.push({
+                        ...userOrder,
+                        customer: {
+                            name: adminOrder.customer?.name || userOrder.customerName || 'Pelanggan',
+                            email: adminOrder.customer?.email || userOrder.email || '-',
+                            phone: adminOrder.customer?.phone || userOrder.phone || '-',
+                            address: adminOrder.customer?.address || userOrder.shippingAddress?.street || '-'
+                        },
+                        paymentMethod: getPaymentText(userOrder.payment),
+                        shippingMethod: userOrder.shippingMethod || adminOrder.shipping?.method || 'JNE',
+                        formattedDate: formattedDate,
+                        date: userOrder.date || adminOrder.date,
+                        dateObject: orderDate // Add parsed date object for filtering
+                    });
+                }
+            });
+
+            // Add orders from adminOrders that might not be in userOrders
+            adminOrders.forEach(adminOrder => {
+                if (adminOrder.status === 'completed' &&
+                    !combinedOrders.some(o => o.orderId === adminOrder.orderId)) {
+
+                    const orderDate = parseDate(adminOrder.date);
+                    const formattedDate = formatDateForDisplay(adminOrder.date);
+
+                    combinedOrders.push({
+                        orderId: adminOrder.orderId,
+                        date: adminOrder.date,
+                        dateObject: orderDate,
+                        formattedDate: formattedDate,
+                        total: adminOrder.total,
+                        items: adminOrder.items,
+                        status: adminOrder.status,
+                        customer: {
+                            name: adminOrder.customer?.name || 'Pelanggan',
+                            email: adminOrder.customer?.email || '-',
+                            phone: adminOrder.customer?.phone || '-',
+                            address: adminOrder.customer?.address || '-'
+                        },
+                        paymentMethod: getPaymentText(adminOrder.payment),
+                        shippingMethod: adminOrder.shipping?.method || 'JNE'
+                    });
+                }
+            });
+
+            // Apply search filter
+            if (searchTerm) {
+                combinedOrders = combinedOrders.filter(order => {
+                    const fieldsToSearch = [
+                        order.orderId?.toString().toLowerCase() || '',
+                        order.customer?.name?.toLowerCase() || '',
+                        order.customer?.email?.toLowerCase() || '',
+                        order.customer?.phone?.toLowerCase() || '',
+                        order.customer?.address?.toLowerCase() || '',
+                        order.items?.map(item => item.name.toLowerCase()).join(' ') || '',
+                        order.formattedDate?.toLowerCase() || '',
+                        (order.total ? 'rp ' + order.total.toString().toLowerCase() : ''),
+                        order.paymentMethod?.toLowerCase() || '',
+                        order.shippingMethod?.toLowerCase() || ''
+                    ];
+
+                    const searchContent = fieldsToSearch.join(' ');
+                    return searchContent.includes(searchTerm);
+                });
+            }
+
+            // Apply date filter if dates are selected
+            if (startDateInput.value || endDateInput.value) {
+                const startDate = startDateInput.value ? normalizeDate(new Date(startDateInput.value)) : null;
+                const endDate = endDateInput.value ? normalizeDate(new Date(endDateInput.value)) : null;
+
+                combinedOrders = combinedOrders.filter(order => {
+                    if (!order.dateObject) return false;
+
+                    const orderDate = normalizeDate(order.dateObject);
+
+                    // Check against start date if provided
+                    if (startDate && orderDate < startDate) {
+                        return false;
+                    }
+
+                    // Check against end date if provided
+                    if (endDate && orderDate > endDate) {
+                        return false;
+                    }
+
+                    return true;
+                });
+            }
+
+            // Sort by date (newest first)
+            combinedOrders.sort((a, b) => {
+                const dateA = a.dateObject || new Date(0);
+                const dateB = b.dateObject || new Date(0);
+                return dateB - dateA;
+            });
+
+            // Update stats summary
+            updateStatsSummary(combinedOrders);
+
+            if (combinedOrders.length === 0) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="10" style="text-align: center; padding: 20px;">Tidak ada pesanan selesai yang ditemukan</td>`;
+                completedOrdersTableBody.appendChild(tr);
+                return;
+            }
+
+            combinedOrders.forEach(order => {
+                const productNames = order.items.map(item => item.name).join(', ');
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                        <td>#${order.orderId || 'ORD-' + Math.random().toString(36).substr(2, 8)}</td>
+                        <td>${order.customer?.name || '-'}</td>
+                        <td>${order.customer?.email || '-'}</td>
+                        <td>${order.customer?.phone || '-'}</td>
+                        <td>${order.customer?.address || '-'}</td>
+                        <td>${productNames}</td>
+                        <td>${order.formattedDate || '-'}</td>
+                        <td>Rp ${(order.total || 0).toLocaleString('id-ID')}</td>
+                        <td>${order.paymentMethod}</td>
+                        <td>${order.shippingMethod}</td>
+                    `;
+                completedOrdersTableBody.appendChild(tr);
+            });
+        }
+
+        // Function to get filtered orders data
+        function getFilteredOrders() {
+            const userOrders = JSON.parse(localStorage.getItem('userOrders')) || [];
+            const adminOrders = JSON.parse(localStorage.getItem('orders')) || [];
+
+            // Get search term
+            const searchTerm = document.getElementById('searchCompletedOrder').value.toLowerCase();
+
+            // Get date filter values
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            const startDate = startDateInput.value ? normalizeDate(new Date(startDateInput.value)) : null;
+            const endDate = endDateInput.value ? normalizeDate(new Date(endDateInput.value)) : null;
+
+            // Combine data from both sources
+            let combinedOrders = [];
+
+            // First get from userOrders
+            userOrders.forEach(userOrder => {
+                if (userOrder.status === 'completed') {
+                    const adminOrder = adminOrders.find(o => o.orderId === userOrder.orderId) || {};
+                    const orderDate = parseDate(userOrder.date || adminOrder.date);
+
+                    combinedOrders.push({
+                        ...userOrder,
+                        customer: {
+                            name: adminOrder.customer?.name || userOrder.customerName || 'Pelanggan',
+                            email: adminOrder.customer?.email || userOrder.email || '-',
+                            phone: adminOrder.customer?.phone || userOrder.phone || '-',
+                            address: adminOrder.customer?.address || userOrder.shippingAddress?.street || '-'
+                        },
+                        paymentMethod: getPaymentText(userOrder.payment),
+                        shippingMethod: userOrder.shippingMethod || adminOrder.shipping?.method || 'JNE',
+                        formattedDate: formatDateForDisplay(userOrder.date || adminOrder.date),
+                        dateObject: orderDate // Add parsed date object for filtering
+                    });
+                }
+            });
+
+            // Add orders from adminOrders that might not be in userOrders
+            adminOrders.forEach(adminOrder => {
+                if (adminOrder.status === 'completed' &&
+                    !combinedOrders.some(o => o.orderId === adminOrder.orderId)) {
+
+                    const orderDate = parseDate(adminOrder.date);
+
+                    combinedOrders.push({
+                        orderId: adminOrder.orderId,
+                        date: adminOrder.date,
+                        dateObject: orderDate,
+                        formattedDate: formatDateForDisplay(adminOrder.date),
+                        total: adminOrder.total,
+                        items: adminOrder.items,
+                        status: adminOrder.status,
+                        customer: {
+                            name: adminOrder.customer?.name || 'Pelanggan',
+                            email: adminOrder.customer?.email || '-',
+                            phone: adminOrder.customer?.phone || '-',
+                            address: adminOrder.customer?.address || '-'
+                        },
+                        paymentMethod: getPaymentText(adminOrder.payment),
+                        shippingMethod: adminOrder.shipping?.method || 'JNE'
+                    });
+                }
+            });
+
+            // Apply search filter
+            if (searchTerm) {
+                combinedOrders = combinedOrders.filter(order => {
+                    const fieldsToSearch = [
+                        order.orderId?.toString().toLowerCase() || '',
+                        order.customer?.name?.toLowerCase() || '',
+                        order.customer?.email?.toLowerCase() || '',
+                        order.customer?.phone?.toLowerCase() || '',
+                        order.customer?.address?.toLowerCase() || '',
+                        order.items?.map(item => item.name.toLowerCase()).join(' ') || '',
+                        order.formattedDate?.toLowerCase() || '',
+                        (order.total ? 'rp ' + order.total.toString().toLowerCase() : ''),
+                        order.paymentMethod?.toLowerCase() || '',
+                        order.shippingMethod?.toLowerCase() || ''
+                    ];
+
+                    const searchContent = fieldsToSearch.join(' ');
+                    return searchContent.includes(searchTerm);
+                });
+            }
+
+            // Apply date filter if dates are selected
+            if (startDate || endDate) {
+                combinedOrders = combinedOrders.filter(order => {
+                    if (!order.dateObject) return false;
+
+                    const orderDate = normalizeDate(order.dateObject);
+
+                    // Check against start date if provided
+                    if (startDate && orderDate < startDate) {
+                        return false;
+                    }
+
+                    // Check against end date if provided
+                    if (endDate && orderDate > endDate) {
+                        return false;
+                    }
+
+                    return true;
+                });
+            }
+
+            return combinedOrders;
+        }
+
+        // Function to generate formatted order ID
+        // Function to generate formatted order ID with vertical display
+        function generateFormattedOrderId(orderId, orderDate) {
+            if (!orderId) return '';
+
+            // If orderId already starts with ORD-, format it vertically
+            if (orderId.startsWith('ORD-')) {
+                const parts = orderId.split('-');
+                if (parts.length === 5) {
+                    return `#${parts[0]}<br>${parts[1]}<br>${parts[2]}-${parts[3]}<br>${parts[4]}`;
+                }
+                return `#${orderId}`;
+            }
+
+            // Otherwise, create a new formatted ID
+            const date = orderDate ? new Date(orderDate) : new Date();
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const randomChars = Math.random().toString(36).substr(2, 6).toUpperCase();
+
+            return `#ORD<br>${year}<br>${month}-${day}<br>${randomChars}`;
+        }
+
+        // Export to PDF function (updated with vertical order ID)
+        document.getElementById('exportBtn').addEventListener('click', function () {
+            const filteredOrders = getFilteredOrders();
+            const adminName = sessionStorage.getItem('adminUsername') || 'Admin';
+            const currentDate = new Date();
+            const formattedCurrentDate = currentDate.toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            if (filteredOrders.length === 0) {
+                showNotification('Tidak ada data untuk diekspor!', true);
+                return;
+            }
+
+            // Create export content
+            let exportContent = `
+                <div style="font-family: Arial, sans-serif; padding: 15px;">
+                    <h2 style="text-align: center; color: #2b6cb0; margin-bottom: 5px;">Laporan Data Pesanan Selesai</h2>
+                    <p style="text-align: center; margin-bottom: 5px; font-size: 14px;">
+                        ${document.getElementById('startDate').value ? 'Periode: ' + formatDate(document.getElementById('startDate').value) : ''}
+                        ${document.getElementById('endDate').value ? ' - ' + formatDate(document.getElementById('endDate').value) : ''}
+                    </p>
+                    <p style="text-align: center; margin-bottom: 20px; font-size: 12px; color: #555;">
+                        Dicetak oleh: ${adminName} | Tanggal: ${formattedCurrentDate}
+                    </p>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px;">
+                        <thead>
+                            <tr style="background-color: #f8fafc;">
+                                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">No Pesanan</th>
+                                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Nama Pelanggan</th>
+                                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Email</th>
+                                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">No HP</th>
+                                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Produk</th>
+                                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Tanggal</th>
+                                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Total</th>
+                                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Pembayaran</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            filteredOrders.forEach(order => {
+                const productNames = order.items.map(item => `${item.name} (${item.quantity}x)`).join(', ');
+                const formattedOrderId = generateFormattedOrderId(order.orderId, order.date);
+
+                exportContent += `
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd; vertical-align: top; line-height: 1.4;">${formattedOrderId}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${order.customer?.name || '-'}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${order.customer?.email || '-'}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${order.customer?.phone || '-'}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${productNames}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${order.formattedDate || '-'}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">Rp ${(order.total || 0).toLocaleString('id-ID')}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${order.paymentMethod}</td>
+                    </tr>
+                `;
+            });
+
+            exportContent += `
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 20px; font-size: 12px;">
+                        <div style="display: inline-block; width: 30%;">
+                            <p><strong>Total Pesanan:</strong> ${filteredOrders.length}</p>
+                        </div>
+                        <div style="display: inline-block; width: 30%;">
+                            <p><strong>Total Produk Terjual:</strong> ${document.getElementById('totalProductsSold').textContent}</p>
+                        </div>
+                        <div style="display: inline-block; width: 30%;">
+                            <p><strong>Total Pendapatan:</strong> ${document.getElementById('totalPayment').textContent}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Tanda tangan section -->
+                    <div style="margin-top: 50px; text-align: right; padding-right: 50px;">
+                        <div style="margin-bottom: 60px;">
+                            <p>........., ${currentDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
+                            <p style="margin-top: 40px;">.</p>
+                            <p style="margin-top: 5px;">(.......................................)</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Create a temporary element for PDF generation
+            const element = document.createElement('div');
+            element.innerHTML = exportContent;
+
+            // PDF options
+            const opt = {
+                margin: 10,
+                filename: `Laporan_Pesanan_${new Date().toISOString().slice(0, 10)}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale: 2,
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true
+                },
+                jsPDF: {
+                    unit: 'mm',
+                    format: 'a4',
+                    orientation: 'landscape'
+                }
+            };
+
+            // Generate PDF
+            html2pdf().set(opt).from(element).save().then(() => {
+                showNotification('Ekspor data berhasil!');
+            }).catch(err => {
+                console.error('Error generating PDF:', err);
+                showNotification('Gagal mengekspor data!', true);
+            });
+        });
+
+        // Initialize data when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            // Load initial data
+            loadCompletedOrders();
+
+            // Set up search event listener with debounce
+            let searchTimeout;
+            document.getElementById('searchCompletedOrder').addEventListener('input', function () {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    loadCompletedOrders();
+                }, 300); // Debounce 300ms
+            });
+
+            // Set up filter button event listeners
+            document.getElementById('applyFilterBtn').addEventListener('click', function () {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+
+                if (startDate && endDate) {
+                    if (new Date(startDate) > new Date(endDate)) {
+                        showNotification('Tanggal mulai tidak boleh lebih besar dari tanggal akhir!', true);
+                        return;
+                    }
+                    loadCompletedOrders();
+                    showNotification(`Menampilkan pesanan dari ${formatDate(startDate)} sampai ${formatDate(endDate)}`);
+                } else if (startDate || endDate) {
+                    loadCompletedOrders();
+                    const message = startDate
+                        ? `Menampilkan pesanan dari ${formatDate(startDate)}`
+                        : `Menampilkan pesanan sampai ${formatDate(endDate)}`;
+                    showNotification(message);
+                } else {
+                    showNotification('Harap pilih tanggal untuk filter!', true);
+                }
+            });
+
+            document.getElementById('resetFilterBtn').addEventListener('click', function () {
+                document.getElementById('startDate').value = '';
+                document.getElementById('endDate').value = '';
+                loadCompletedOrders();
+                showNotification('Filter direset, menampilkan semua pesanan');
+            });
+
+            // Set up auto-update mechanism
+            setInterval(() => {
+                loadCompletedOrders();
+            }, 5000); // Update every 5 seconds
+
+            // Listen for storage events (changes from other tabs)
+            window.addEventListener('storage', function (event) {
+                if (event.key === 'orders' || event.key === 'userOrders') {
+                    loadCompletedOrders();
+                }
+            });
+
+            // Listen for custom events (changes from same tab)
+            window.addEventListener('localStorageUpdated', function () {
+                loadCompletedOrders();
+            });
+        });
+    </script>
+</body>
+
+</html>

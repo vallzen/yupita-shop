@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Deklarasi tipe dokumen dan bahasa -->
+    <meta charset="UTF-8"> <!-- Menentukan encoding karakter -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Pengaturan viewport untuk responsif -->
+    <title>Login - Yupita Shop</title> <!-- Judul halaman -->
+    <link rel="stylesheet" href="assets/css/stylelogin.css"> <!-- Menghubungkan file CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Library animasi CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Library ikon Font Awesome -->
+    <style>
+        /* Tambahan style untuk password strength indicator */
+        .form-group.floating {
+            padding-top: 0;
+            margin-bottom: 25px;
+        }
+
+        .form-group.floating label {
+            position: absolute;
+            left: 45px;
+            top: 15px;
+            color: #718096;
+            font-size: 1rem;
+            font-weight: 400;
+            pointer-events: none;
+            transition: all 0.2s ease;
+            background: white;
+            padding: 0 5px;
+        }
+
+        .form-group.floating.focused label,
+        .form-group.floating input:focus+label,
+        .form-group.floating input:not(:placeholder-shown)+label {
+            top: -8px;
+            left: 35px;
+            font-size: 0.8rem;
+            color: #2b6cb0;
+            font-weight: 500;
+        }
+
+        .form-group.floating input {
+            width: 100%;
+            padding: 15px 15px 15px 40px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background-color: #ffffff;
+        }
+
+        .form-group.floating input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+            background-color: white;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+            font-size: 1rem;
+        }
+
+        /* Gaya untuk toggle password */
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 42%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #a0aec0;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 5px;
+        }
+
+        .toggle-password:hover {
+            color: #718096;
+        }
+
+        /* Hapus underline yang lama */
+        .form-group .underline {
+            display: none;
+        }
+
+        /* Style baru untuk validasi password */
+        .password-feedback {
+            margin-top: 8px;
+            display: none;
+        }
+
+        .password-feedback.active {
+            display: block;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #e53e3e;
+        }
+
+        .requirement.valid {
+            color: #38a169;
+        }
+
+        .requirement i {
+            margin-right: 5px;
+            font-size: 10px;
+        }
+
+        .requirement.invalid i {
+            color: #e53e3e;
+        }
+
+        .requirement.valid i {
+            color: #38a169;
+        }
+
+        /* Perbaikan posisi ikon untuk modal */
+        .modal .form-group.floating {
+            padding-top: 15px;
+        }
+
+        .modal .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 41px;
+            /* Posisi awal saat tidak ada feedback */
+            color: #a0aec0;
+            font-size: 1rem;
+            transition: top 0.2s ease;
+        }
+
+        /* Saat ada feedback aktif */
+        .modal .password-feedback.active~.input-icon {
+            top: 15px;
+            /* Posisi saat feedback aktif */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Animation -->
+    <div id="particles-js"></div> <!-- Container untuk animasi partikel -->
+    <div class="gradient-bg"></div> <!-- Latar belakang gradient -->
+
+    <!-- NAV BAR -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <div class="logo">
+                    <i class="fas fa-shopping-bag"></i> <!-- Ikon toko -->
+                    <span>YUPITA SHOP</span> <!-- Nama toko -->
+                </div>
+                <div class="subtitle">Barang Berkualitas & Original</div> <!-- Slogan -->
+            </div>
+            <div class="navbar-right">
+                <a href="https://wa.me/628990023990?text=Hallo Yupita Shop saya mau bertanya"
+                    class="nav-button chat-button" title="Chat Admin">
+                    <i class="fab fa-whatsapp"></i> <!-- Ikon WhatsApp -->
+                    <span class="button-text">Chat Admin</span> <!-- Teks tombol -->
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Notifikasi Error -->
+    <div id="errorNotification" class="error-notification"></div> <!-- Tempat menampilkan pesan error -->
+
+    <!-- LOGIN FORM -->
+    <div class="login-container">
+        <div class="login-box animate__animated animate__fadeInUp"> <!-- Kotak login dengan animasi -->
+            <div class="login-header">
+                <h2>Masuk ke Akun Anda</h2> <!-- Judul form -->
+                <p>Silakan masuk untuk mulai berbelanja</p> <!-- Subjudul -->
+            </div>
+            <form id="loginForm"> <!-- Form login -->
+                <!-- Ubah form-group username menjadi -->
+                <div class="form-group floating">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="username" name="username" required placeholder=" ">
+                    <label for="username">Username</label>
+                </div>
+
+                <!-- Ubah form-group password menjadi -->
+                <div class="form-group floating">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" name="password" required placeholder=" ">
+                    <label for="password">Password</label>
+                    <button type="button" class="toggle-password" onclick="togglePassword()" aria-label="Show password">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+                <button type="submit" class="login-button"> <!-- Tombol submit -->
+                    <span class="button-text">Login</span>
+                    <span class="button-icon">→</span> <!-- Ikon panah -->
+                </button>
+                <div class="login-links">
+                    <a href="#" id="forgotPassword"><i class="fa-solid fa-masks-theater"></i> Lupa Password?</a>
+                    <!-- Link lupa password -->
+                    <a href="#" id="signUp"><i class="fa-solid fa-user-plus"></i> Daftar Akun Baru</a>
+                    <!-- Link pendaftaran -->
+                </div>
+            </form>
+            <div class="login-footer">
+                <p>Dengan login, Anda menyetujui <a href="syaratketentuanlogin.html">Syarat & Ketentuan</a> kami.</p>
+                <p></p>
+                <p><a href="loginadmin.html" class="back-to-admin"><i class="fa-solid fa-user-shield"></i> Login
+                        Admin</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIGN UP MODAL -->
+    <div id="signupModal" class="modal"> <!-- Modal untuk pendaftaran -->
+        <div class="modal-content animate__animated animate__zoomIn"> <!-- Konten modal dengan animasi -->
+            <span class="close">&times;</span> <!-- Tombol tutup -->
+            <div class="modal-header">
+                <h2>Buat Akun Baru</h2> <!-- Judul modal -->
+                <p>Isi data berikut untuk mendaftar</p> <!-- Subjudul -->
+            </div>
+            <div id="signupError" class="signup-error"></div> <!-- Tempat pesan error -->
+            <div id="signupSuccess" class="signup-success"> <!-- Tempat pesan sukses -->
+                <div class="success-icon">✓</div> <!-- Ikon sukses -->
+                <p>Pendaftaran berhasil! Mengarahkan ke login...</p> <!-- Pesan sukses -->
+            </div>
+            <form id="signupForm"> <!-- Form pendaftaran -->
+                <!-- Contoh untuk form-group di modal signup -->
+                <div class="form-group floating">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="newUsername" name="newUsername" required placeholder=" ">
+                    <label for="newUsername">Username</label>
+                </div>
+
+                <div class="form-group floating">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" id="newEmail" name="newEmail" required placeholder=" ">
+                    <label for="newEmail">Email</label>
+                </div>
+                <div class="form-group floating">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="newPassword" name="newPassword" required placeholder=" " minlength="8"
+                        maxlength="20">
+                    <!-- Input password baru -->
+                    <label for="newPassword">Password</label>
+                    <button type="button" class="toggle-password" onclick="togglePasswordModal('newPassword')"
+                        aria-label="Show password">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                    <div class="password-strength"></div>
+                    <div class="password-feedback">
+                        <div class="requirement invalid" id="lengthReq">
+                            <i class="fas fa-circle"></i>
+                            <span>Minimal 8 karakter (maks. 20)</span>
+                        </div>
+                        <div class="requirement invalid" id="letterReq">
+                            <i class="fas fa-circle"></i>
+                            <span>Minimal 1 huruf</span>
+                        </div>
+                        <div class="requirement invalid" id="numberReq">
+                            <i class="fas fa-circle"></i>
+                            <span>Minimal 1 angka</span>
+                        </div>
+                        <div class="requirement invalid" id="specialReq">
+                            <i class="fas fa-circle"></i>
+                            <span>Minimal 1 karakter khusus (# ? ! $ & @ _ .)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group floating">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder=" ">
+                    <!-- Konfirmasi password -->
+                    <label for="confirmPassword">Konfirmasi Password</label>
+                    <button type="button" class="toggle-password" onclick="togglePasswordModal('confirmPassword')"
+                        aria-label="Show password">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+                <button type="submit" class="signup-button"> <!-- Tombol submit -->
+                    <span class="button-text">Daftar Sekarang</span>
+                    <span class="button-icon"><i class="fa-solid fa-plus"></i></span> <!-- Ikon centang -->
+                </button>
+            </form>
+            <div class="modal-footer">
+                <p>Sudah punya akun? <a href="#" class="switch-to-login">Masuk disini</a></p> <!-- Link ke login -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FORGOT PASSWORD MODAL -->
+    <div id="forgotModal" class="modal"> <!-- Modal untuk lupa password -->
+        <div class="modal-content animate__animated animate__zoomIn">
+            <span class="close">&times;</span>
+            <div class="modal-header">
+                <h2>Reset Password</h2>
+                <p>Masukkan data berikut untuk reset password</p>
+            </div>
+            <div id="forgotError" class="signup-error"></div> <!-- Tempat pesan error -->
+            <div id="forgotSuccess" class="signup-success"> <!-- Tempat pesan sukses -->
+                <div class="success-icon">✓</div>
+                <p>Password berhasil direset! Mengarahkan ke login...</p>
+            </div>
+            <form id="forgotForm"> <!-- Form reset password -->
+                <!-- Username Input -->
+                <div class="form-group floating">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="resetUsername" name="resetUsername" required placeholder=" ">
+                    <!-- Input username -->
+                    <label for="resetUsername">Username</label>
+                    <div id="usernameError" class="input-error-message"
+                        style="display: none; color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                        Username tidak terdaftar <!-- Pesan error username -->
+                    </div>
+                </div>
+
+                <!-- Email Input -->
+                <div class="form-group floating">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" id="resetEmail" name="resetEmail" required placeholder=" " disabled>
+                    <!-- Input email -->
+                    <label for="resetEmail">Email Terdaftar</label>
+                    <div id="emailError" class="input-error-message"
+                        style="display: none; color: #e53e3e; font-size: 12px; margin-top: 5px;">
+                        Email tidak terdaftar <!-- Pesan error email -->
+                    </div>
+                </div>
+
+                <!-- New Password Input -->
+                <div class="form-group floating">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="newResetPassword" name="newResetPassword" required placeholder=" "
+                        disabled> <!-- Input password baru -->
+                    <label for="newResetPassword">Password Baru</label>
+                    <button type="button" class="toggle-password" onclick="togglePasswordModal('newResetPassword')"
+                        aria-label="Show password">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                    <div class="password-strength"></div>
+                    <div class="password-feedback">
+                        <div class="requirement invalid" id="resetLengthReq">
+                            <i class="fas fa-circle"></i>
+                            <span>Minimal 8 karakter (maks. 20)</span>
+                        </div>
+                        <div class="requirement invalid" id="resetLetterReq">
+                            <i class="fas fa-circle"></i>
+                            <span>Minimal 1 huruf</span>
+                        </div>
+                        <div class="requirement invalid" id="resetNumberReq">
+                            <i class="fas fa-circle"></i>
+                            <span>Minimal 1 angka</span>
+                        </div>
+                        <div class="requirement invalid" id="resetSpecialReq">
+                            <i class="fas fa-circle"></i>
+                            <span>Minimal 1 karakter khusus (# ? ! $ & @ _ .)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" id="resetPasswordBtn" class="reset-button" disabled> <!-- Tombol submit -->
+                    <span class="button-text">Reset Password</span>
+                    <span class="button-icon"><i class="fa-solid fa-key"></i></span> <!-- Ikon kunci -->
+                </button>
+            </form>
+            <div class="modal-footer">
+                <p>Ingat password? <a href="#" class="switch-to-login">Masuk disini</a></p> <!-- Link ke login -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Tambahkan library particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- Library animasi partikel -->
+    <script>
+        // Inisialisasi particles.js untuk animasi background
+        document.addEventListener('DOMContentLoaded', function () {
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": {
+                        "value": 80,
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": ["#48bb78", "#2b6cb0", "#e53e3e", "#f6ad55"]
+                    },
+                    "shape": {
+                        "type": ["circle", "triangle", "polygon"],
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000000"
+                        },
+                        "polygon": {
+                            "nb_sides": 6
+                        }
+                    },
+                    "opacity": {
+                        "value": 0.3,
+                        "random": true,
+                        "anim": {
+                            "enable": false,
+                            "speed": 1,
+                            "opacity_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "size": {
+                        "value": 8,
+                        "random": true,
+                        "anim": {
+                            "enable": false,
+                            "speed": 40,
+                            "size_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#a0aec0",
+                        "opacity": 0.2,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 2,
+                        "direction": "none",
+                        "random": true,
+                        "straight": false,
+                        "out_mode": "out",
+                        "bounce": false,
+                        "attract": {
+                            "enable": false,
+                            "rotateX": 600,
+                            "rotateY": 1200
+                        }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "grab"
+                        },
+                        "onclick": {
+                            "enable": true,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 140,
+                            "line_linked": {
+                                "opacity": 1
+                            }
+                        },
+                        "bubble": {
+                            "distance": 400,
+                            "size": 40,
+                            "duration": 2,
+                            "opacity": 8,
+                            "speed": 3
+                        },
+                        "push": {
+                            "particles_nb": 4
+                        }
+                    }
+                },
+                "retina_detect": true
+            });
+
+            // Event listener untuk username pada form reset password
+            document.getElementById('resetUsername').addEventListener('blur', function () {
+                const username = this.value.trim();
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                const userExists = users.some(u => u.username === username);
+
+                const usernameError = document.getElementById('usernameError');
+                const resetEmailInput = document.getElementById('resetEmail');
+
+                if (username && !userExists) {
+                    usernameError.style.display = 'block';
+                    resetEmailInput.disabled = true;
+                    document.getElementById('resetPasswordBtn').disabled = true;
+                } else {
+                    usernameError.style.display = 'none';
+                    resetEmailInput.disabled = false;
+
+                    // Jika username valid, fokus ke email
+                    if (username) {
+                        resetEmailInput.focus();
+                    }
+                }
+            });
+
+            // Event listener untuk email pada form reset password
+            document.getElementById('resetEmail').addEventListener('blur', function () {
+                const email = this.value.trim();
+                const username = document.getElementById('resetUsername').value.trim();
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+
+                // Cari user dengan username dan email yang sesuai
+                const user = users.find(u => u.username === username && u.email === email);
+
+                const emailError = document.getElementById('emailError');
+                const newPasswordInput = document.getElementById('newResetPassword');
+
+                if (email && !user) {
+                    emailError.style.display = 'block';
+                    newPasswordInput.disabled = true;
+                    document.getElementById('resetPasswordBtn').disabled = true;
+                } else {
+                    emailError.style.display = 'none';
+                    newPasswordInput.disabled = false;
+
+                    // Jika email valid, fokus ke password baru
+                    if (email && user) {
+                        newPasswordInput.focus();
+                    }
+                }
+            });
+
+            // Event listener untuk password baru pada form reset password
+            document.getElementById('newResetPassword').addEventListener('input', function () {
+                const password = this.value;
+                const username = document.getElementById('resetUsername').value.trim();
+                const email = document.getElementById('resetEmail').value.trim();
+
+                // Update password strength indicator
+                updatePasswordStrengthIndicator(password);
+                validatePasswordRequirements(password, 'reset');
+
+                // Aktifkan tombol reset jika semua field valid
+                if (username && email && password) {
+                    const users = JSON.parse(localStorage.getItem('users')) || [];
+                    const userExists = users.some(u => u.username === username && u.email === email);
+
+                    if (userExists) {
+                        document.getElementById('resetPasswordBtn').disabled = false;
+                    }
+                }
+            });
+
+            // Form submission untuk reset password
+            document.getElementById('forgotForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const username = document.getElementById('resetUsername').value.trim();
+                const email = document.getElementById('resetEmail').value.trim();
+                const newPassword = document.getElementById('newResetPassword').value;
+
+                // Validasi password
+                const { requirements } = checkPasswordStrength(newPassword);
+                if (!requirements.length || !requirements.hasNumber || !requirements.hasLetter || !requirements.hasSpecialChar) {
+                    document.getElementById('forgotError').textContent = 'Password tidak memenuhi persyaratan!';
+                    document.getElementById('forgotError').style.display = 'block';
+                    document.getElementById('newResetPassword').classList.add('input-error');
+                    return;
+                }
+
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                const userIndex = users.findIndex(u => u.username === username && u.email === email);
+
+                if (userIndex !== -1) {
+                    // Update password
+                    users[userIndex].password = newPassword;
+                    localStorage.setItem('users', JSON.stringify(users));
+
+                    // Tampilkan pesan sukses
+                    document.getElementById('forgotSuccess').style.display = 'flex';
+                    document.getElementById('forgotForm').style.display = 'none';
+
+                    // Redirect ke login setelah 2 detik
+                    setTimeout(() => {
+                        document.getElementById('forgotModal').style.display = 'none';
+                        document.getElementById('forgotForm').reset();
+                        document.getElementById('forgotSuccess').style.display = 'none';
+                        document.getElementById('forgotForm').style.display = 'block';
+                        document.body.classList.remove('body-no-scroll');
+
+                        // Reset semua input dan disable state
+                        document.getElementById('resetEmail').disabled = true;
+                        document.getElementById('newResetPassword').disabled = true;
+                        document.getElementById('resetPasswordBtn').disabled = true;
+                    }, 2000);
+                }
+            });
+        });
+
+        let users = JSON.parse(localStorage.getItem('users')) || []; // Mengambil data user dari localStorage
+
+        // Fungsi untuk menampilkan notifikasi error
+        function showError(message) {
+            const errorDiv = document.getElementById('errorNotification');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            errorDiv.classList.add('animate__animated', 'animate__fadeInDown');
+
+            setTimeout(() => {
+                errorDiv.classList.remove('animate__fadeInDown');
+                errorDiv.classList.add('animate__fadeOutUp');
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                    errorDiv.classList.remove('animate__fadeOutUp');
+                }, 500);
+            }, 4500);
+        }
+
+        // Fungsi reset error state
+        function resetErrorState() {
+            document.getElementById('errorNotification').style.display = 'none';
+            document.querySelectorAll('.input-error').forEach(el => {
+                el.classList.remove('input-error');
+            });
+        }
+
+        // Toggle password visibility untuk form utama
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.querySelector('.toggle-password i');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            eyeIcon.classList.toggle('fa-eye-slash');
+            eyeIcon.classList.toggle('fa-eye');
+        }
+
+        // Toggle password visibility untuk modal
+        function togglePasswordModal(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const eyeIcon = passwordInput.nextElementSibling.querySelector('i');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            eyeIcon.classList.toggle('fa-eye-slash');
+            eyeIcon.classList.toggle('fa-eye');
+        }
+
+        // Fungsi untuk mengecek kekuatan password
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            const requirements = {
+                length: false,
+                hasNumber: false,
+                hasLetter: false,
+                hasSpecialChar: false
+            };
+
+            // Cek panjang password
+            if (password.length >= 8 && password.length <= 20) {
+                strength++;
+                requirements.length = true;
+            }
+
+            // Cek mengandung angka
+            if (/\d/.test(password)) {
+                strength++;
+                requirements.hasNumber = true;
+            }
+
+            // Cek mengandung huruf
+            if (/[a-zA-Z]/.test(password)) {
+                strength++;
+                requirements.hasLetter = true;
+            }
+
+            // Cek mengandung karakter khusus
+            if (/[#?!$&@_\.]/.test(password)) {
+                strength++;
+                requirements.hasSpecialChar = true;
+            }
+
+            return { strength, requirements };
+        }
+
+        // Fungsi untuk memvalidasi persyaratan password
+        function validatePasswordRequirements(password, type = 'signup') {
+            const { requirements } = checkPasswordStrength(password);
+
+            // Tampilkan feedback
+            const feedbackContainer = type === 'signup' ?
+                document.querySelector('#signupForm .password-feedback') :
+                document.querySelector('#forgotForm .password-feedback');
+
+            // Update tampilan persyaratan
+            const lengthReq = type === 'signup' ?
+                document.getElementById('lengthReq') :
+                document.getElementById('resetLengthReq');
+            const letterReq = type === 'signup' ?
+                document.getElementById('letterReq') :
+                document.getElementById('resetLetterReq');
+            const numberReq = type === 'signup' ?
+                document.getElementById('numberReq') :
+                document.getElementById('resetNumberReq');
+            const specialReq = type === 'signup' ?
+                document.getElementById('specialReq') :
+                document.getElementById('resetSpecialReq');
+
+            // Update kelas berdasarkan validasi
+            if (requirements.length) {
+                lengthReq.classList.remove('invalid');
+                lengthReq.classList.add('valid');
+                lengthReq.querySelector('i').className = 'fas fa-check-circle';
+            } else {
+                lengthReq.classList.remove('valid');
+                lengthReq.classList.add('invalid');
+                lengthReq.querySelector('i').className = 'fas fa-circle';
+            }
+
+            if (requirements.hasLetter) {
+                letterReq.classList.remove('invalid');
+                letterReq.classList.add('valid');
+                letterReq.querySelector('i').className = 'fas fa-check-circle';
+            } else {
+                letterReq.classList.remove('valid');
+                letterReq.classList.add('invalid');
+                letterReq.querySelector('i').className = 'fas fa-circle';
+            }
+
+            if (requirements.hasNumber) {
+                numberReq.classList.remove('invalid');
+                numberReq.classList.add('valid');
+                numberReq.querySelector('i').className = 'fas fa-check-circle';
+            } else {
+                numberReq.classList.remove('valid');
+                numberReq.classList.add('invalid');
+                numberReq.querySelector('i').className = 'fas fa-circle';
+            }
+
+            if (requirements.hasSpecialChar) {
+                specialReq.classList.remove('invalid');
+                specialReq.classList.add('valid');
+                specialReq.querySelector('i').className = 'fas fa-check-circle';
+            } else {
+                specialReq.classList.remove('valid');
+                specialReq.classList.add('invalid');
+                specialReq.querySelector('i').className = 'fas fa-circle';
+            }
+
+            // Tampilkan feedback jika password tidak kosong
+            if (password.length > 0) {
+                feedbackContainer.classList.add('active');
+            } else {
+                feedbackContainer.classList.remove('active');
+            }
+        }
+
+        // Update tampilan indikator password
+        function updatePasswordStrengthIndicator(password) {
+            const strengthIndicator = document.querySelector('.password-strength');
+            const { strength } = checkPasswordStrength(password);
+
+            // Reset semua indikator
+            strengthIndicator.className = 'password-strength';
+            strengthIndicator.classList.add(`strength-${Math.min(strength, 5)}`);
+        }
+
+        // Event listener untuk input password baru
+        document.getElementById('newPassword').addEventListener('input', function () {
+            const password = this.value;
+            updatePasswordStrengthIndicator(password);
+            validatePasswordRequirements(password);
+        });
+
+        // Form submission untuk login
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.username === username);
+
+            if (!user) {
+                showError('Akun tidak ditemukan atau telah dihapus');
+                document.getElementById('username').classList.add('input-error');
+                return;
+            }
+
+            if (user.password !== password) {
+                showError('Password salah');
+                document.getElementById('password').classList.add('input-error');
+                return;
+            }
+
+            // Animasi sebelum redirect
+            document.querySelector('.login-button').classList.add('loading');
+            document.querySelector('.login-button .button-text').textContent = 'Memproses...';
+
+            setTimeout(() => {
+                localStorage.setItem('loggedInUser', username); // Menyimpan data user yang login
+                window.location.href = 'webtoko.html'; // Redirect ke halaman toko
+            }, 1500);
+        });
+
+        // Sign Up Form
+        document.getElementById('signupForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            document.getElementById('signupError').style.display = 'none';
+            document.getElementById('signupSuccess').style.display = 'none';
+
+            const username = document.getElementById('newUsername').value.trim();
+            const email = document.getElementById('newEmail').value.trim();
+            const password = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            document.querySelectorAll('#signupForm .input-error').forEach(el => {
+                el.classList.remove('input-error');
+            });
+
+            if (password !== confirmPassword) {
+                document.getElementById('signupError').textContent = 'Password tidak cocok!';
+                document.getElementById('signupError').style.display = 'block';
+                document.getElementById('newPassword').classList.add('input-error');
+                document.getElementById('confirmPassword').classList.add('input-error');
+                return;
+            }
+
+            // Validasi persyaratan password
+            const { requirements } = checkPasswordStrength(password);
+            if (!requirements.length || !requirements.hasNumber || !requirements.hasLetter || !requirements.hasSpecialChar) {
+                document.getElementById('signupError').textContent = 'Password tidak memenuhi persyaratan!';
+                document.getElementById('signupError').style.display = 'block';
+                document.getElementById('newPassword').classList.add('input-error');
+
+                // Scroll ke input password
+                document.getElementById('newPassword').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            if (users.some(u => u.username === username)) {
+                document.getElementById('signupError').textContent = 'Username sudah digunakan!';
+                document.getElementById('signupError').style.display = 'block';
+                document.getElementById('newUsername').classList.add('input-error');
+                return;
+            }
+
+            if (users.some(u => u.email === email)) {
+                document.getElementById('signupError').textContent = 'Email sudah terdaftar!';
+                document.getElementById('signupError').style.display = 'block';
+                document.getElementById('newEmail').classList.add('input-error');
+                return;
+            }
+
+            // Animasi loading
+            document.querySelector('.signup-button').classList.add('loading');
+            document.querySelector('.signup-button .button-text').textContent = 'Mendaftarkan...';
+
+            setTimeout(() => {
+                // Format tanggal pendaftaran
+                const registrationDate = new Date().toLocaleDateString('id-ID', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+
+                // Tambahkan user baru
+                const newUser = {
+                    username,
+                    email,
+                    password,
+                    registrationDate,
+                    joinDate: new Date().toISOString() // Tambahkan timestamp untuk statistik
+                };
+
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users)); // Simpan user baru ke localStorage
+
+                // Update statistik pengguna baru
+                updateNewUserStats();
+
+                document.getElementById('signupSuccess').style.display = 'flex';
+                document.getElementById('signupForm').style.display = 'none';
+
+                setTimeout(() => {
+                    document.getElementById('signupModal').style.display = 'none';
+                    document.getElementById('signupForm').reset();
+                    document.getElementById('signupSuccess').style.display = 'none';
+                    document.getElementById('signupForm').style.display = 'block';
+                    document.querySelector('.signup-button').classList.remove('loading');
+                    document.querySelector('.signup-button .button-text').textContent = 'Daftar Sekarang';
+                    document.body.classList.remove('body-no-scroll');
+                }, 2000);
+            }, 1000);
+        });
+
+        // Fungsi untuk update statistik pengguna baru
+        function updateNewUserStats() {
+            // Ambil data statistik yang ada atau buat baru jika belum ada
+            const stats = JSON.parse(localStorage.getItem('userStats')) || {
+                totalUsers: 0,
+                monthlyNewUsers: {},
+                dailyNewUsers: {}
+            };
+
+            // Update total pengguna
+            stats.totalUsers = users.length;
+
+            // Dapatkan bulan dan tahun saat ini
+            const now = new Date();
+            const currentMonth = now.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+            const today = now.toLocaleDateString('id-ID');
+
+            // Update statistik bulanan
+            if (!stats.monthlyNewUsers[currentMonth]) {
+                stats.monthlyNewUsers[currentMonth] = 0;
+            }
+            stats.monthlyNewUsers[currentMonth]++;
+
+            // Update statistik harian
+            if (!stats.dailyNewUsers[today]) {
+                stats.dailyNewUsers[today] = 0;
+            }
+            stats.dailyNewUsers[today]++;
+
+            // Simpan kembali ke localStorage
+            localStorage.setItem('userStats', JSON.stringify(stats));
+        }
+
+        // Modal handlers
+        document.getElementById('signUp').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('signupModal').style.display = 'block'; // Tampilkan modal signup
+            document.body.classList.add('body-no-scroll'); // Nonaktifkan scroll
+        });
+
+        document.getElementById('forgotPassword').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('forgotModal').style.display = 'block'; // Tampilkan modal lupa password
+            document.body.classList.add('body-no-scroll');
+
+            // Reset form reset password saat dibuka
+            document.getElementById('forgotForm').reset();
+            document.getElementById('resetEmail').disabled = true;
+            document.getElementById('newResetPassword').disabled = true;
+            document.getElementById('resetPasswordBtn').disabled = true;
+            document.getElementById('usernameError').style.display = 'none';
+            document.getElementById('emailError').style.display = 'none';
+        });
+
+        // Switch to login from modals
+        document.querySelectorAll('.switch-to-login').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.style.display = 'none'; // Tutup semua modal
+                });
+                document.body.classList.remove('body-no-scroll'); // Aktifkan scroll kembali
+            });
+        });
+
+        const closeButtons = document.getElementsByClassName('close');
+        for (let i = 0; i < closeButtons.length; i++) {
+            closeButtons[i].addEventListener('click', function () {
+                this.closest('.modal').style.display = 'none'; // Tutup modal
+                const forms = this.closest('.modal').querySelectorAll('form');
+                forms.forEach(form => form.reset()); // Reset form
+                this.closest('.modal').querySelectorAll('.input-error').forEach(el => {
+                    el.classList.remove('input-error'); // Hapus class error
+                });
+                const errorDivs = this.closest('.modal').querySelectorAll('.signup-error, .signup-success');
+                errorDivs.forEach(div => div.style.display = 'none'); // Sembunyikan pesan error/sukses
+                document.body.classList.remove('body-no-scroll'); // Aktifkan scroll kembali
+
+                // Reset form reset password saat ditutup
+                document.getElementById('resetEmail').disabled = true;
+                document.getElementById('newResetPassword').disabled = true;
+                document.getElementById('resetPasswordBtn').disabled = true;
+                document.getElementById('usernameError').style.display = 'none';
+                document.getElementById('emailError').style.display = 'none';
+            });
+        }
+
+        window.addEventListener('click', function (event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none'; // Tutup modal saat klik di luar
+                const forms = event.target.querySelectorAll('form');
+                forms.forEach(form => form.reset()); // Reset form
+                event.target.querySelectorAll('.input-error').forEach(el => {
+                    el.classList.remove('input-error'); // Hapus class error
+                });
+                const errorDivs = event.target.querySelectorAll('.signup-error, .signup-success');
+                errorDivs.forEach(div => div.style.display = 'none'); // Sembunyikan pesan error/sukses
+                document.body.classList.remove('body-no-scroll'); // Aktifkan scroll kembali
+
+                // Reset form reset password saat diklik di luar modal
+                document.getElementById('resetEmail').disabled = true;
+                document.getElementById('newResetPassword').disabled = true;
+                document.getElementById('resetPasswordBtn').disabled = true;
+                document.getElementById('usernameError').style.display = 'none';
+                document.getElementById('emailError').style.display = 'none';
+            }
+        });
+
+        // Floating label effect
+        document.querySelectorAll('.floating input').forEach(input => {
+            input.addEventListener('focus', function () {
+                this.parentNode.classList.add('focused'); // Tambahkan class focused saat input aktif
+            });
+
+            input.addEventListener('blur', function () {
+                if (!this.value) {
+                    this.parentNode.classList.remove('focused'); // Hapus class focused jika input kosong
+                }
+            });
+
+            // Initialize
+            if (input.value) {
+                input.parentNode.classList.add('focused'); // Set class focused jika input sudah berisi
+            }
+        });
+    </script>
+</body>
+
+</html>

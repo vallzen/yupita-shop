@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Checkout - Yupita Shop</title>
+    <link rel="stylesheet" href="assets/css/stylewebtoko.css">
+    <link rel="stylesheet" href="assets/css/stylecheckout.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 25px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        #modalContent,
+        #paymentModalContent {
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        #modalContent p,
+        #paymentModalContent p {
+            margin-bottom: 10px;
+        }
+
+        #modalContent strong,
+        #paymentModalContent strong {
+            color: #2d3748;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .confirmation-btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .confirmation-btn.confirm {
+            background-color: #48bb78;
+            color: white;
+        }
+
+        .confirmation-btn.confirm:hover {
+            background-color: #38a169;
+        }
+
+        .confirmation-btn.cancel {
+            background-color: #e53e3e;
+            color: white;
+        }
+
+        .confirmation-btn.cancel:hover {
+            background-color: #c53030;
+        }
+
+        /* New Success Notification Style */
+        .success-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #48bb78;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 9999;
+            transform: translateX(150%);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            max-width: 350px;
+        }
+
+        .success-notification.show {
+            transform: translateX(0);
+        }
+
+        .success-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .success-content {
+            flex-grow: 1;
+        }
+
+        .success-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .success-message {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .close-notification {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .close-notification:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAV BAR -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <div class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>YUPITA SHOP</span>
+                </div>
+                <div class="subtitle">Barang Berkualitas & Original</div>
+            </div>
+            <div class="navbar-right">
+                <div class="navbar-buttons">
+                    <span id="loggedInUser" class="user-display"></span>
+                    <a href="webtoko.html" class="nav-button info-button">
+                        <i class="fas fa-arrow-left"></i>
+                        <span class="button-text">Kembali Ke Toko</span>
+                    </a>
+                </div>
+                <button class="hamburger-menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="checkout-container">
+        <h1>Checkout</h1>
+        <div class="checkout-grid">
+            <div class="order-summary">
+                <h2>Ringkasan Pesanan</h2>
+                <div id="orderItems"></div>
+                <div class="order-total">
+                    <span>Total Produk:</span>
+                    <span id="orderTotal">Rp. 0</span>
+                </div>
+                <div class="payment-summary">
+                    <h3>Rincian Pembayaran</h3>
+                    <div class="payment-detail">
+                        <span>Subtotal Pesanan</span>
+                        <span id="subtotalOrder">Rp. 0</span>
+                    </div>
+                    <div class="payment-detail">
+                        <span>Subtotal Pengiriman</span>
+                        <span id="subtotalShipping">Rp. 0</span>
+                    </div>
+                    <div class="payment-detail">
+                        <span>Biaya Layanan</span>
+                        <span>Rp. 2.000</span>
+                    </div>
+                    <div class="payment-total">
+                        <span>Total Pembayaran</span>
+                        <span id="totalPayment">Rp. 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="customer-info">
+                <h2>Informasi Pelanggan</h2>
+                <form id="checkoutForm">
+                    <div class="form-group">
+                        <label for="customerName">Nama Lengkap*</label>
+                        <input type="text" id="customerName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customerEmail">Email*</label>
+                        <input type="email" id="customerEmail" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customerPhone">Nomor HP/WhatsApp*</label>
+                        <input type="tel" id="customerPhone" pattern="[0-9]*" inputmode="numeric" required>
+                        <div id="phoneError" class="error-message" style="color: red; display: none;"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customerAddress">Alamat Lengkap*</label>
+                        <textarea id="customerAddress" rows="4" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customerNote">Pesan untuk Penjual (Opsional)</label>
+                        <textarea id="customerNote" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shippingMethod">Opsi Pengiriman*</label>
+                        <select id="shippingMethod" required>
+                            <option value="">Pilih pengiriman...</option>
+                            <option value="JNE">JNE (Rp. 15.000 - 45.000)</option>
+                            <option value="SiCepat">SiCepat (Rp. 18.000 - 48.000)</option>
+                            <option value="J&T">J&T (Rp. 16.000 - 46.000)</option>
+                            <option value="NinjaXpress">NinjaXpress (Rp. 17.000 - 47.000)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="paymentMethod">Metode Pembayaran*</label>
+                        <select id="paymentMethod" required>
+                            <option value="">Pilih metode...</option>
+                            <option value="transfer">Transfer Bank</option>
+                            <option value="ewallet">E-Wallet (Dana)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="submit-order">
+                        <i class="fas fa-credit-card"></i> Pesan Sekarang
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi -->
+    <div id="confirmationPopup" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modalTitle">Konfirmasi Pesanan</h2>
+            <div id="modalContent">
+                <p id="confirmationMessage">Apakah Anda yakin ingin memesan barang ini?</p>
+            </div>
+            <div class="confirmation-buttons">
+                <button id="confirmAction" class="confirmation-btn confirm">Ya, Pesan</button>
+                <button id="cancelAction" class="confirmation-btn cancel">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pembayaran -->
+    <div id="paymentModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="paymentModalTitle">Instruksi Pembayaran</h2>
+            <div id="paymentModalContent">
+                <p id="paymentInstruction"></p>
+            </div>
+            <button id="confirmPayment" class="submit-order">
+                <i class="fas fa-check"></i> Saya Sudah Membayar
+            </button>
+        </div>
+    </div>
+
+    <!-- Success Notification -->
+    <div id="successNotification" class="success-notification">
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="success-content">
+            <div class="success-title">Pesanan Berhasil!</div>
+            <div class="success-message">Barang Anda akan segera dikirim</div>
+        </div>
+        <button class="close-notification">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Tampilkan nama user yang login
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            if (loggedInUser) {
+                document.getElementById('loggedInUser').textContent = 'Halo, ' + loggedInUser;
+            }
+
+            // Ambil data checkout dari localStorage (bukan dari keranjang)
+            const checkoutData = JSON.parse(localStorage.getItem('yupita_shop_checkout')) || [];
+
+            // Validasi jika tidak ada item checkout
+            if (checkoutData.length === 0) {
+                showNotification('Tidak ada item untuk checkout!', 'error');
+                window.location.href = 'webtoko.html';
+                return;
+            }
+
+            // Hitung total checkout
+            const checkoutTotal = checkoutData.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            // Tampilkan item pesanan
+            const orderItems = document.getElementById('orderItems');
+            orderItems.innerHTML = checkoutData.map(item => {
+                let details = '';
+                if (item.size) details += `Ukuran: ${item.size}`;
+                if (item.color) details += details ? ` | Warna: ${item.color}` : `Warna: ${item.color}`;
+
+                return `
+            <div class="order-item">
+                <div class="item-name">${item.name}</div>
+                ${details ? `<div class="item-detail">${details}</div>` : ''}
+                <div class="item-qty">${item.quantity}x</div>
+                <div class="item-price">Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</div>
+            </div>
+            `;
+            }).join('');
+
+            document.getElementById('orderTotal').textContent =
+                `Rp ${checkoutTotal.toLocaleString('id-ID')}`;
+
+            // Isi data user jika sudah login
+            if (loggedInUser) {
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                const user = users.find(u => u.username === loggedInUser);
+
+                if (user) {
+                    document.getElementById('customerName').value = user.username;
+                    document.getElementById('customerEmail').value = user.email || '';
+                }
+            }
+
+            // Validasi input nomor HP
+            const phoneInput = document.getElementById('customerPhone');
+            const phoneError = document.getElementById('phoneError');
+
+            phoneInput.addEventListener('input', function () {
+                // Hanya menerima angka
+                this.value = this.value.replace(/[^0-9]/g, '');
+
+                // Validasi panjang nomor (min 10 digit, max 15 digit)
+                if (this.value.length < 10 || this.value.length > 15) {
+                    phoneError.textContent = 'Nomor HP harus 10-15 digit angka';
+                    phoneError.style.display = 'block';
+                } else {
+                    phoneError.style.display = 'none';
+                }
+            });
+
+            // Fungsi untuk update biaya pengiriman
+            const shippingMethod = document.getElementById('shippingMethod');
+            shippingMethod.addEventListener('change', updateShippingCost);
+
+            function updateShippingCost() {
+                const checkoutData = JSON.parse(localStorage.getItem('yupita_shop_checkout')) || [];
+                const hasHelmet = checkoutData.some(item => item.category === 'accessories' && item.name.includes('Helm'));
+
+                // Hitung jumlah produk (termasuk helm jika ada)
+                const totalItems = checkoutData.reduce((sum, item) => sum + item.quantity, 0);
+                const helmetCount = checkoutData
+                    .filter(item => item.category === 'accessories' && item.name.includes('Helm'))
+                    .reduce((sum, item) => sum + item.quantity, 0);
+                const regularItemCount = totalItems - helmetCount;
+
+                let shippingCost = 0;
+
+                // Hitung biaya pengiriman berdasarkan jumlah produk dan helm
+                if (hasHelmet) {
+                    // Jika ada helm, hitung biaya helm + biaya produk reguler
+                    switch (shippingMethod.value) {
+                        case 'JNE':
+                            shippingCost = (helmetCount * 45000) + (regularItemCount * 15000);
+                            break;
+                        case 'SiCepat':
+                            shippingCost = (helmetCount * 48000) + (regularItemCount * 18000);
+                            break;
+                        case 'J&T':
+                            shippingCost = (helmetCount * 46000) + (regularItemCount * 16000);
+                            break;
+                        case 'NinjaXpress':
+                            shippingCost = (helmetCount * 47000) + (regularItemCount * 17000);
+                            break;
+                    }
+                } else {
+                    // Jika tidak ada helm, hitung biaya produk reguler saja
+                    switch (shippingMethod.value) {
+                        case 'JNE':
+                            shippingCost = totalItems * 15000;
+                            break;
+                        case 'SiCepat':
+                            shippingCost = totalItems * 18000;
+                            break;
+                        case 'J&T':
+                            shippingCost = totalItems * 16000;
+                            break;
+                        case 'NinjaXpress':
+                            shippingCost = totalItems * 17000;
+                            break;
+                    }
+                }
+
+                document.getElementById('subtotalShipping').textContent = `Rp. ${shippingCost.toLocaleString('id-ID')}`;
+                updateTotalPayment();
+            }
+
+            function updateTotalPayment() {
+                const checkoutData = JSON.parse(localStorage.getItem('yupita_shop_checkout')) || [];
+                const subtotal = checkoutData.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const shippingCostText = document.getElementById('subtotalShipping').textContent;
+                const shippingCost = parseInt(shippingCostText.replace(/[^0-9]/g, '')) || 0;
+                const serviceFee = 2000;
+                const total = subtotal + shippingCost + serviceFee;
+
+                document.getElementById('subtotalOrder').textContent = `Rp. ${subtotal.toLocaleString('id-ID')}`;
+                document.getElementById('totalPayment').textContent = `Rp. ${total.toLocaleString('id-ID')}`;
+            }
+
+            // Panggil saat pertama kali load
+            updateTotalPayment();
+
+            // Modal functions
+            const paymentModal = document.getElementById('paymentModal');
+            const confirmationModal = document.getElementById('confirmationPopup');
+            const closeModals = document.querySelectorAll('.close-modal');
+            const confirmPaymentBtn = document.getElementById('confirmPayment');
+            const confirmActionBtn = document.getElementById('confirmAction');
+            const cancelActionBtn = document.getElementById('cancelAction');
+            const successNotification = document.getElementById('successNotification');
+            const closeNotificationBtn = document.querySelector('.close-notification');
+
+            closeModals.forEach(closeBtn => {
+                closeBtn.addEventListener('click', function () {
+                    this.closest('.modal').style.display = 'none';
+                });
+            });
+
+            window.addEventListener('click', function (event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            });
+
+            confirmPaymentBtn.addEventListener('click', function () {
+                paymentModal.style.display = 'none';
+
+                // Kosongkan keranjang belanja setelah pembayaran dikonfirmasi
+                if (loggedInUser) {
+                    const CART_KEY = `yupita_shop_cart_${loggedInUser}`;
+                    localStorage.removeItem(CART_KEY);
+                }
+
+                showSuccessNotification();
+                setTimeout(() => {
+                    window.location.href = 'riwayatpesanan.html';
+                }, 3000);
+            });
+
+            closeNotificationBtn.addEventListener('click', function () {
+                hideSuccessNotification();
+                window.location.href = 'riwayatpesanan.html';
+            });
+
+            // Fungsi untuk menampilkan notifikasi sukses
+            function showSuccessNotification() {
+                successNotification.classList.add('show');
+
+                // Auto hide setelah 5 detik
+                setTimeout(() => {
+                    if (successNotification.classList.contains('show')) {
+                        hideSuccessNotification();
+                        window.location.href = 'riwayatpesanan.html';
+                    }
+                }, 5000);
+            }
+
+            function hideSuccessNotification() {
+                successNotification.classList.remove('show');
+            }
+
+            // Fungsi untuk menampilkan notifikasi umum
+            function showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                <div class="notification-icon">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-message">${message}</div>
+                </div>
+            `;
+
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 10);
+
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 500);
+                }, 5000);
+            }
+
+            // Fungsi untuk menampilkan konfirmasi
+            function showConfirmation(title, message, callback) {
+                document.getElementById('modalTitle').textContent = title;
+                document.getElementById('confirmationMessage').textContent = message;
+                confirmationModal.style.display = 'block';
+
+                function handleConfirm() {
+                    callback(true);
+                    confirmationModal.style.display = 'none';
+                    confirmActionBtn.removeEventListener('click', handleConfirm);
+                    cancelActionBtn.removeEventListener('click', handleCancel);
+                }
+
+                function handleCancel() {
+                    callback(false);
+                    confirmationModal.style.display = 'none';
+                    confirmActionBtn.removeEventListener('click', handleConfirm);
+                    cancelActionBtn.removeEventListener('click', handleCancel);
+                }
+
+                confirmActionBtn.addEventListener('click', handleConfirm);
+                cancelActionBtn.addEventListener('click', handleCancel);
+            }
+
+            // Handle form checkout
+            document.getElementById('checkoutForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                // Validasi form
+                const name = document.getElementById('customerName').value;
+                const email = document.getElementById('customerEmail').value;
+                const phone = document.getElementById('customerPhone').value;
+                const address = document.getElementById('customerAddress').value;
+                const paymentMethod = document.getElementById('paymentMethod').value;
+                const shippingMethodValue = document.getElementById('shippingMethod').value;
+
+                if (!name || !email || !phone || !address || !paymentMethod || !shippingMethodValue) {
+                    showNotification('Harap lengkapi semua informasi yang diperlukan!', 'error');
+                    return;
+                }
+
+                if (phone.length < 10 || phone.length > 15) {
+                    phoneError.textContent = 'Nomor HP harus 10-15 digit angka';
+                    phoneError.style.display = 'block';
+                    phoneInput.focus();
+                    return;
+                }
+
+                showConfirmation('Konfirmasi Pesanan', 'Apakah Anda yakin ingin memesan barang ini?', (confirmed) => {
+                    if (confirmed) {
+                        const now = new Date();
+                        const options = {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: false
+                        };
+                        const formattedDate = now.toLocaleDateString('id-ID', options);
+
+                        const orderId = 'ORD-' + now.getFullYear() + '-' +
+                            (now.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                            now.getDate().toString().padStart(2, '0') + '-' +
+                            Math.random().toString(36).substr(2, 6).toUpperCase();
+
+                        // Simpan data pesanan dengan status 'processing' (Dikemas)
+                        const order = {
+                            orderId: orderId,
+                            customer: {
+                                name: name,
+                                email: email,
+                                phone: phone,
+                                address: address
+                            },
+                            payment: paymentMethod,
+                            shipping: shippingMethodValue,
+                            items: checkoutData,
+                            total: checkoutTotal,
+                            date: formattedDate,
+                            status: 'processing'
+                        };
+
+                        // Simpan ke localStorage orders
+                        const orders = JSON.parse(localStorage.getItem('orders')) || [];
+                        orders.push(order);
+                        localStorage.setItem('orders', JSON.stringify(orders));
+
+                        // Simpan ke userOrders dengan status 'processing'
+                        const userOrders = JSON.parse(localStorage.getItem('userOrders')) || [];
+                        userOrders.push({
+                            orderId: orderId,
+                            date: formattedDate,
+                            items: checkoutData,
+                            total: checkoutTotal,
+                            payment: paymentMethod,
+                            shippingMethod: shippingMethodValue,
+                            shippingCost: parseInt(document.getElementById('subtotalShipping').textContent.replace(/[^0-9]/g, '')),
+                            status: 'processing'
+                        });
+                        localStorage.setItem('userOrders', JSON.stringify(userOrders));
+
+                        // Update statistik toko
+                        updateShopStatistics(order);
+
+                        // Handle berdasarkan metode pembayaran
+                        if (paymentMethod === 'transfer') {
+                            document.getElementById('paymentModalTitle').textContent = 'Transfer Bank BRI';
+                            document.getElementById('paymentInstruction').innerHTML = `
+                        <p>Silakan lakukan transfer ke rekening berikut:</p>
+                        <p><strong>Bank BRI</strong></p>
+                        <p><strong>No. Rekening: 2113 0100 4365 536</strong></p>
+                        <p><strong>Atas Nama: Yupita Shop</strong></p>
+                        <p>Total yang harus dibayar: <strong>${document.getElementById('totalPayment').textContent}</strong></p>
+                        <p>Setelah melakukan pembayaran, klik tombol "Saya Sudah Membayar" di bawah ini.</p>
+                    `;
+                            paymentModal.style.display = 'block';
+                        } else if (paymentMethod === 'ewallet') {
+                            window.open('https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012012022101940950559', '_blank');
+
+                            // Kosongkan keranjang belanja setelah pembayaran dikonfirmasi (untuk e-wallet)
+                            if (loggedInUser) {
+                                const CART_KEY = `yupita_shop_cart_${loggedInUser}`;
+                                localStorage.removeItem(CART_KEY);
+                            }
+
+                            showSuccessNotification();
+                            setTimeout(() => {
+                                window.location.href = 'riwayatpesanan.html';
+                            }, 3000);
+                        }
+                    }
+                });
+            });
+
+            function updateShopStatistics(order) {
+                // Get current date information
+                const now = new Date();
+                const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                    "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                const currentMonth = monthNames[now.getMonth()];
+                const currentYear = now.getFullYear();
+                const monthYearKey = `${currentMonth} ${currentYear}`;
+
+                // Get or initialize statistics
+                let stats = JSON.parse(localStorage.getItem('salesStatistics')) || {
+                    totalSales: 0,
+                    totalRevenue: 0,
+                    newCustomers: 0,
+                    monthlyData: {},
+                    categoryData: {
+                        'Pakaian': 0,
+                        'Elektronik': 0,
+                        'Makanan': 0,
+                        'Aksesoris': 0,
+                        'Lainnya': 0
+                    }
+                };
+
+                // Update total sales and revenue
+                const itemsSold = order.items.reduce((sum, item) => sum + item.quantity, 0);
+                stats.totalSales += itemsSold;
+                stats.totalRevenue += order.total;
+
+                // Update monthly data
+                if (!stats.monthlyData[monthYearKey]) {
+                    stats.monthlyData[monthYearKey] = {
+                        sales: 0,
+                        revenue: 0
+                    };
+                }
+                stats.monthlyData[monthYearKey].sales += itemsSold;
+                stats.monthlyData[monthYearKey].revenue += order.total;
+
+                // Update category data
+                order.items.forEach(item => {
+                    const category = item.category || 'Lainnya';
+                    if (!stats.categoryData[category]) {
+                        stats.categoryData[category] = 0;
+                    }
+                    stats.categoryData[category] += item.quantity;
+                });
+
+                // Check if new customer (simple implementation)
+                const allOrders = JSON.parse(localStorage.getItem('orders')) || [];
+                const customerOrders = allOrders.filter(o => o.customer.email === order.customer.email);
+                if (customerOrders.length === 1) { // This is their first order
+                    stats.newCustomers += 1;
+                }
+
+                // Save updated statistics
+                localStorage.setItem('salesStatistics', JSON.stringify(stats));
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,224 @@
+/* OrderanCustomer.css */
+body {
+    zoom: 97%;
+}
+
+.recent-orders {
+    background-color: white;
+    border-radius: 12px;
+    padding: 1.8rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.recent-orders h2 {
+    color: #2b6cb0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.search-filter {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-box input {
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    width: 200px;
+    transition: all 0.3s;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
+
+.search-box i {
+    position: absolute;
+    left: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #718096;
+}
+
+#filterStatus {
+    padding: 0.5rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background-color: white;
+    cursor: pointer;
+}
+
+#filterStatus:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
+
+.orders-table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #edf2f7;
+    width: 100%;
+}
+
+.orders-table {
+    width: 100%;
+    min-width: 1100px;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.95rem;
+}
+
+.orders-table th,
+.orders-table td {
+    padding: 1rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #edf2f7;
+    white-space: nowrap;
+}
+
+.orders-table th {
+    background-color: #f8fafc;
+    color: #4a5568;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+}
+
+.orders-table tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Status Styles */
+.status {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-block;
+    min-width: 120px;
+    text-align: center;
+}
+
+.status.completed {
+    background-color: #ebf8f2;
+    color: #38a169;
+}
+
+.status.processing {
+    background-color: #ebf8ff;
+    color: #3182ce;
+}
+
+.status.cancelled {
+    background-color: #fff5f5;
+    color: #e53e3e;
+}
+
+.status.pending {
+    background-color: #feebc8;
+    color: #dd6b20;
+}
+
+.status.waiting {
+    background-color: #feebc8;
+    color: #d69e2e;
+}
+
+/* Action Buttons */
+.action-btns {
+    display: flex;
+    gap: 8px;
+}
+
+.view-btn {
+    background-color: #4299e1;
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.view-btn:hover {
+    background-color: #3182ce;
+    transform: scale(1.1);
+}
+
+.confirm-btn {
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm-btn.approve {
+    background-color: #48bb78;
+    color: white;
+}
+
+.confirm-btn.approve:hover {
+    background-color: #38a169;
+}
+
+.confirm-btn.reject {
+    background-color: #f56565;
+    color: white;
+}
+
+.confirm-btn.reject:hover {
+    background-color: #e53e3e;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .search-filter {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    .search-box input {
+        width: 100%;
+    }
+    
+    .orders-table th, 
+    .orders-table td {
+        padding: 0.8rem;
+    }
+}

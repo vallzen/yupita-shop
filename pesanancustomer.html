@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesanan Customer - Admin Yupita Shop</title>
+    <link rel="stylesheet" href="assets/css/stylekelolauser.css">
+    <link rel="stylesheet" href="assets/css/stylepesanancustomer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        /* Notification Popup Styles */
+        .notification-popup {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #48bb78;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            transform: translateX(150%);
+            transition: transform 0.3s ease-out;
+        }
+
+        .notification-popup.show {
+            transform: translateX(0);
+        }
+
+        .notification-popup.error {
+            background-color: #f56565;
+        }
+
+        .notification-popup i {
+            font-size: 1.5rem;
+        }
+
+        .notification-popup .notification-content {
+            flex: 1;
+        }
+
+        .notification-popup .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 10px;
+        }
+
+        /* Confirmation Popup Styles */
+        .confirmation-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .confirmation-popup.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .confirmation-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .confirmation-popup.show .confirmation-content {
+            transform: translateY(0);
+        }
+
+        .confirmation-icon {
+            font-size: 3rem;
+            color: #4299e1;
+            margin-bottom: 1rem;
+        }
+
+        .confirmation-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2d3748;
+        }
+
+        .confirmation-message {
+            color: #4a5568;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .confirmation-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .confirmation-btn.confirm {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+        }
+
+        .confirmation-btn.cancel {
+            background-color: #f8fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 2% auto;
+            padding: 30px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 900px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .receipt-actions {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .download-receipt-btn {
+            background-color: #4299e1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download-receipt-btn:hover {
+            background-color: #3182ce;
+        }
+
+        /* Receipt Styles */
+        .receipt-content {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .success-icon {
+            color: #48bb78;
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .receipt-header h1 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .receipt-header p {
+            color: #718096;
+            font-size: 1rem;
+        }
+
+        .receipt-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .receipt-section h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .detail-label {
+            flex: 1;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.95rem;
+        }
+
+        .detail-value {
+            flex: 2;
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+
+        .items-list {
+            margin-top: 20px;
+        }
+
+        .item-row {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            align-items: center;
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .item-name {
+            flex: 3;
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+
+        .item-detail {
+            flex: 2;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .item-qty {
+            flex: 1;
+            text-align: center;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .item-price {
+            flex: 1;
+            text-align: right;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+
+        .receipt-footer {
+            text-align: center;
+            margin-top: 30px;
+            font-style: italic;
+            color: #718096;
+        }
+
+        .receipt-footer p:last-child {
+            margin-top: 30px;
+            color: #2d3748;
+            font-weight: 500;
+            font-style: normal;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Notification Popup -->
+    <div id="notificationPopup" class="notification-popup">
+        <i class="fas fa-check-circle"></i>
+        <div class="notification-content"></div>
+        <button class="notification-close">&times;</button>
+    </div>
+
+    <!-- Confirmation Popup -->
+    <div id="confirmationPopup" class="confirmation-popup">
+        <div class="confirmation-content">
+            <i id="confirmationIcon" class="fas fa-question-circle confirmation-icon"></i>
+            <h3 id="confirmationTitle" class="confirmation-title">Konfirmasi</h3>
+            <p id="confirmationMessage" class="confirmation-message">Apakah Anda yakin ingin melakukan tindakan ini?</p>
+            <div class="confirmation-buttons">
+                <button id="confirmAction" class="confirmation-btn confirm">OK</button>
+                <button id="cancelAction" class="confirmation-btn cancel">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fixed Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-user-cog"></i>
+                    <h1>Admin Panel</h1>
+                </div>
+                <nav class="admin-nav">
+                    <ul>
+                        <li><a href="kelolauser.html"><i class="fas fa-users"></i> Kelola User</a></li>
+                        <li><a href="datapenjualan.html"><i class="fas fa-chart-line"></i> Data Penjualan</a></li>
+                        <li class="active"><a href="pesanancustomer.html"><i class="fas fa-shopping-cart"></i> Pesanan
+                                Customer</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="admin-info">
+                    <div class="admin-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="admin-details">
+                        <span id="currentAdminName"></span>
+                        <small>Administrator</small>
+                    </div>
+                    <button id="logoutAdmin" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Recent Orders -->
+            <section class="recent-orders">
+                <div class="section-header">
+                    <h2>Pesanan Terbaru</h2>
+                    <div class="search-filter">
+                        <div class="search-box">
+                            <input type="text" id="searchOrder" placeholder="Cari pesanan...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <select id="filterStatus">
+                            <option value="all">Semua Status</option>
+                            <option value="processing">Sedang Dikemas</option>
+                            <option value="packing">Dalam Pengiriman</option>
+                            <option value="completed">Pesanan Selesai</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="orders-table-container">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th width="15%">ID Pesanan</th>
+                                <th width="20%">Nama Pelanggan</th>
+                                <th width="15%">No HP</th>
+                                <th width="15%">Tanggal</th>
+                                <th width="15%">Total Pembayaran</th>
+                                <th width="15%">Status</th>
+                                <th width="15%">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal untuk menampilkan resi -->
+    <div id="receiptModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="receiptContent" class="receipt-content">
+                <!-- Konten resi akan diisi oleh JavaScript -->
+            </div>
+            <div class="receipt-actions">
+                <button id="downloadReceiptBtn" class="download-receipt-btn">
+                    <i class="fas fa-download"></i> Download Resi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Notification functions
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notificationPopup');
+            const content = notification.querySelector('.notification-content');
+            const icon = notification.querySelector('i');
+
+            content.textContent = message;
+
+            if (isError) {
+                notification.classList.add('error');
+                icon.className = 'fas fa-exclamation-circle';
+            } else {
+                notification.classList.remove('error');
+                icon.className = 'fas fa-check-circle';
+            }
+
+            notification.classList.add('show');
+
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        function hideNotification() {
+            document.getElementById('notificationPopup').classList.remove('show');
+        }
+
+        // Confirmation functions
+        function showConfirmation(title, message, callback) {
+            const popup = document.getElementById('confirmationPopup');
+            const titleEl = document.getElementById('confirmationTitle');
+            const messageEl = document.getElementById('confirmationMessage');
+            const icon = document.getElementById('confirmationIcon');
+
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+
+            popup.classList.add('show');
+
+            const confirmBtn = document.getElementById('confirmAction');
+            const cancelBtn = document.getElementById('cancelAction');
+
+            function handleConfirm() {
+                callback(true);
+                popup.classList.remove('show');
+                confirmBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+            }
+
+            function handleCancel() {
+                callback(false);
+                popup.classList.remove('show');
+                confirmBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+            }
+
+            confirmBtn.addEventListener('click', handleConfirm);
+            cancelBtn.addEventListener('click', handleCancel);
+        }
+
+        // Close notification when clicking X
+        document.querySelector('.notification-close').addEventListener('click', hideNotification);
+
+        // Authentication check
+        if (!sessionStorage.getItem('adminAuthenticated')) {
+            window.location.href = 'loginadmin.html';
+        }
+
+        // Set admin name
+        document.getElementById('currentAdminName').textContent =
+            sessionStorage.getItem('adminUsername') || 'Admin';
+
+        // Logout function
+        document.getElementById('logoutAdmin').addEventListener('click', function () {
+            showConfirmation('Konfirmasi Logout', 'Apakah Anda yakin ingin logout?', (confirmed) => {
+                if (confirmed) {
+                    sessionStorage.removeItem('adminAuthenticated');
+                    sessionStorage.removeItem('adminUsername');
+                    window.location.href = 'loginadmin.html';
+                }
+            });
+        });
+
+        // Function to get status text
+        function getStatusText(status) {
+            switch (status) {
+                case 'completed': return 'Pesanan Selesai';
+                case 'cancelled': return 'Dibatalkan';
+                case 'processing': return 'Sedang Dikemas';
+                case 'packing': return 'Dalam Pengiriman';
+                default: return status;
+            }
+        }
+
+        // Function to update order status
+        function updateOrderStatus(orderId, newStatus) {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const orderIndex = orders.findIndex(o => o.orderId === orderId);
+
+            if (orderIndex !== -1) {
+                orders[orderIndex].status = newStatus;
+
+                // Jika status diubah menjadi completed, tambahkan informasi lengkap
+                if (newStatus === 'completed') {
+                    // Pastikan semua field penting ada
+                    const order = orders[orderIndex];
+                    if (!order.customerName && order.customer?.name) {
+                        order.customerName = order.customer.name;
+                    }
+                    if (!order.email && order.customer?.email) {
+                        order.email = order.customer.email;
+                    }
+                    if (!order.phone && order.customer?.phone) {
+                        order.phone = order.customer.phone;
+                    }
+                    if (!order.shippingAddress && order.customer?.address) {
+                        order.shippingAddress = {
+                            street: order.customer.address,
+                            city: 'Kota tidak diketahui',
+                            province: 'Provinsi tidak diketahui'
+                        };
+                    }
+                    if (!order.paymentMethod) {
+                        order.paymentMethod = order.payment === 'transfer' ? 'Transfer Bank' :
+                            order.payment === 'ewallet' ? 'E-Wallet (Dana)' : 'COD (Bayar di Tempat)';
+                    }
+                    if (!order.shippingMethod && order.shipping?.method) {
+                        order.shippingMethod = order.shipping.method;
+                    }
+                }
+
+                localStorage.setItem('orders', JSON.stringify(orders));
+
+                // Update user orders
+                const userOrders = JSON.parse(localStorage.getItem('userOrders')) || [];
+                const userOrderIndex = userOrders.findIndex(o => o.orderId === orderId);
+
+                if (userOrderIndex !== -1) {
+                    userOrders[userOrderIndex].status = newStatus;
+                    localStorage.setItem('userOrders', JSON.stringify(userOrders));
+                }
+
+                // Trigger custom event to update other tabs
+                const event = new Event('localStorageUpdated');
+                window.dispatchEvent(event);
+
+                loadRecentOrders();
+                showNotification(`Status pesanan #${orderId} berhasil diubah menjadi "${getStatusText(newStatus)}"`);
+            }
+        }
+
+        // Function to load recent orders
+        function loadRecentOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const ordersTableBody = document.getElementById('ordersTableBody');
+            ordersTableBody.innerHTML = '';
+
+            // Get filter values
+            const searchTerm = document.getElementById('searchOrder').value.toLowerCase();
+            const filterStatus = document.getElementById('filterStatus').value;
+
+            // Filter orders
+            let filteredOrders = orders;
+
+            // Apply search filter
+            if (searchTerm) {
+                filteredOrders = filteredOrders.filter(order =>
+                    (order.orderId && order.orderId.toLowerCase().includes(searchTerm)) ||
+                    (order.customer?.name && order.customer.name.toLowerCase().includes(searchTerm)) ||
+                    (order.customer?.email && order.customer.email.toLowerCase().includes(searchTerm)) ||
+                    (order.customer?.phone && order.customer.phone.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            // Apply status filter
+            if (filterStatus !== 'all') {
+                filteredOrders = filteredOrders.filter(order => order.status === filterStatus);
+            }
+
+            // Sort by date (newest first)
+            filteredOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (filteredOrders.length === 0) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="7" style="text-align: center; padding: 20px;">Tidak ada pesanan yang ditemukan</td>`;
+                ordersTableBody.appendChild(tr);
+                return;
+            }
+
+            filteredOrders.forEach(order => {
+                const status = order.status || 'processing';
+                const statusClass = status === 'completed' ? 'completed' :
+                    status === 'cancelled' ? 'cancelled' :
+                        status === 'packing' ? 'waiting' : 'processing';
+                const statusText = getStatusText(status);
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>#${order.orderId || 'ORD-' + Math.random().toString(36).substr(2, 8)}</td>
+                    <td>${order.customer?.name || 'Nama Pelanggan'}</td>
+                    <td>${order.customer?.phone || '-'}</td>
+                    <td>${order.date || new Date().toLocaleDateString('id-ID')}</td>
+                    <td>Rp ${(order.total || 0).toLocaleString('id-ID')}</td>
+                    <td><span class="status ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="view-btn" data-orderid="${order.orderId}" title="Lihat Resi">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${status === 'processing' ? `
+                                <button class="confirm-btn approve" data-orderid="${order.orderId}" title="Konfirmasi Pengiriman">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            ` : ''}
+                            ${status !== 'completed' && status !== 'cancelled' ? `
+                                <button class="confirm-btn reject" data-orderid="${order.orderId}" title="Batalkan Pesanan">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </td>
+                `;
+                ordersTableBody.appendChild(tr);
+            });
+
+            // Add event listeners for action buttons
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const orderId = this.getAttribute('data-orderid');
+                    showOrderReceipt(orderId);
+                });
+            });
+
+            document.querySelectorAll('.confirm-btn.approve').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const orderId = this.getAttribute('data-orderid');
+                    showConfirmation('Konfirmasi Pengiriman', `Apakah Anda yakin ingin mengkonfirmasi pengiriman pesanan #${orderId}?`, (confirmed) => {
+                        if (confirmed) {
+                            updateOrderStatus(orderId, 'packing');
+                        }
+                    });
+                });
+            });
+
+            document.querySelectorAll('.confirm-btn.reject').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const orderId = this.getAttribute('data-orderid');
+                    showConfirmation('Batalkan Pesanan', `Apakah Anda yakin ingin membatalkan pesanan #${orderId}?`, (confirmed) => {
+                        if (confirmed) {
+                            updateOrderStatus(orderId, 'cancelled');
+                        }
+                    });
+                });
+            });
+        }
+
+        // Function to show order receipt in modal
+        function showOrderReceipt(orderId) {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const order = orders.find(o => o.orderId === orderId);
+
+            if (!order) {
+                showNotification('Pesanan tidak ditemukan!', true);
+                return;
+            }
+
+            // Get shipping data with multiple fallbacks
+            let shippingCost = 0;
+            let shippingMethod = 'JNE'; // Default value
+
+            // First try from order.shipping object
+            if (order.shipping && order.shipping.cost) {
+                shippingCost = order.shipping.cost;
+                shippingMethod = order.shipping.method || shippingMethod;
+            }
+            // Then try from direct properties
+            else if (order.shippingCost) {
+                shippingCost = order.shippingCost;
+                shippingMethod = order.shippingMethod || shippingMethod;
+            }
+
+            // Final fallback to userOrders
+            if (shippingCost === 0) {
+                const userOrders = JSON.parse(localStorage.getItem('userOrders')) || [];
+                const userOrder = userOrders.find(o => o.orderId === orderId);
+                if (userOrder) {
+                    shippingCost = userOrder.shippingCost || shippingCost;
+                    shippingMethod = userOrder.shippingMethod || shippingMethod;
+                }
+            }
+
+            // If still 0, set a reasonable default
+            if (shippingCost === 0) {
+                shippingCost = 15000; // Default shipping cost
+            }
+
+            // Calculate totals
+            const subtotalOrder = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const serviceFee = 2000;
+            const totalPayment = subtotalOrder + shippingCost + serviceFee;
+
+            // Format receipt content
+            const receiptContent = document.getElementById('receiptContent');
+            receiptContent.innerHTML = `
+                <div class="receipt-header">
+                    <i class="fas fa-check-circle success-icon"></i>
+                    <h1>Pesanan #${orderId}</h1>
+                    <p>Status: ${getStatusText(order.status)}</p>
+                </div>
+
+                <div class="receipt-section">
+                    <h2>Detail Pesanan</h2>
+                    <div class="detail-row">
+                        <div class="detail-label">Nomor Pesanan:</div>
+                        <div class="detail-value">${orderId}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Tanggal Pesanan:</div>
+                        <div class="detail-value">${order.date || '-'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Total Pembayaran:</div>
+                        <div class="detail-value">Rp ${totalPayment.toLocaleString('id-ID')}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Metode Pembayaran:</div>
+                        <div class="detail-value">
+                            ${order.payment === 'transfer' ? 'Transfer Bank' :
+                    order.payment === 'ewallet' ? 'E-Wallet (Dana)' : 'COD (Bayar di Tempat)'}
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Metode Pengiriman:</div>
+                        <div class="detail-value">${shippingMethod} (Rp ${shippingCost.toLocaleString('id-ID')})</div>
+                    </div>
+                </div>
+
+                <div class="receipt-section">
+                    <h2>Informasi Nama Pelanggan</h2>
+                    <div class="detail-row">
+                        <div class="detail-label">Nama:</div>
+                        <div class="detail-value">${order.customer?.name || '-'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Email:</div>
+                        <div class="detail-value">${order.customer?.email || '-'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">No. HP/WhatsApp:</div>
+                        <div class="detail-value">${order.customer?.phone || '-'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Alamat Pengiriman:</div>
+                        <div class="detail-value">${order.customer?.address || '-'}</div>
+                    </div>
+                </div>
+
+                <div class="receipt-section">
+                    <h2>Item Pesanan</h2>
+                    <div class="items-list">
+                        ${order.items.map(item => `
+                            <div class="item-row">
+                                <div class="item-name">${item.name}</div>
+                                <div class="item-detail">
+                                    ${item.size ? `Ukuran: ${item.size}` : ''}
+                                    ${item.size && item.color ? ' | ' : ''}
+                                    ${item.color ? `Warna: ${item.color}` : ''}
+                                </div>
+                                <div class="item-qty">${item.quantity}x</div>
+                                <div class="item-price">Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="receipt-section">
+                    <h2>Rincian Pembayaran</h2>
+                    <div class="detail-row">
+                        <div class="detail-label">Subtotal Pesanan:</div>
+                        <div class="detail-value">Rp ${subtotalOrder.toLocaleString('id-ID')}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Subtotal Pengiriman:</div>
+                        <div class="detail-value">Rp ${shippingCost.toLocaleString('id-ID')}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Biaya Layanan:</div>
+                        <div class="detail-value">Rp ${serviceFee.toLocaleString('id-ID')}</div>
+                    </div>
+                    <div class="detail-row" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e2e8f0;">
+                        <div class="detail-label" style="font-weight: 600;">Total Pembayaran:</div>
+                        <div class="detail-value" style="font-weight: 600;">Rp ${totalPayment.toLocaleString('id-ID')}</div>
+                    </div>
+                </div>
+
+                <div class="receipt-footer">
+                    <p>*Resi ini valid tanpa tanda tangan</p>
+                    <p>Terima kasih telah berbelanja di Yupita Shop!</p>
+                </div>
+            `;
+
+            // Set up download button
+            document.getElementById('downloadReceiptBtn').onclick = function () {
+                downloadReceipt(orderId);
+            };
+
+            // Show modal
+            document.getElementById('receiptModal').style.display = 'block';
+        }
+
+        // Function to download receipt as PDF
+        function downloadReceipt(orderId) {
+            const element = document.getElementById('receiptContent');
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: `Resi_YupitaShop_${orderId}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        // Initialize data
+        document.addEventListener('DOMContentLoaded', function () {
+            // Load initial data
+            loadRecentOrders();
+
+            // Set up search and filter event listeners
+            document.getElementById('searchOrder').addEventListener('input', loadRecentOrders);
+            document.getElementById('filterStatus').addEventListener('change', loadRecentOrders);
+
+            // Set up auto-update mechanism
+            setInterval(() => {
+                loadRecentOrders();
+            }, 5000); // Update every 5 seconds
+
+            // Listen for storage events (changes from other tabs)
+            window.addEventListener('storage', function (event) {
+                if (event.key === 'orders') {
+                    loadRecentOrders();
+                }
+            });
+
+            // Listen for custom events (changes from same tab)
+            window.addEventListener('localStorageUpdated', function () {
+                loadRecentOrders();
+            });
+
+            // Modal functionality
+            const modal = document.getElementById('receiptModal');
+            const closeBtn = document.querySelector('.close');
+
+            // Close modal when clicking X
+            closeBtn.addEventListener('click', function () {
+                modal.style.display = 'none';
+            });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

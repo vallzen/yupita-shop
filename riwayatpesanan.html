@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Riwayat Pesanan - Yupita Shop</title>
+    <link rel="stylesheet" href="assets/css/stylewebtoko.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .orders-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .orders-container h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2d3748;
+            font-size: 2rem;
+            position: relative;
+        }
+
+        .orders-container h1::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: #48bb78;
+            margin: 15px auto 0;
+        }
+
+        .order-tabs {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .order-tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #4a5568;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .order-tab.active {
+            color: #48bb78;
+            border-bottom-color: #48bb78;
+        }
+
+        .order-tab:hover:not(.active) {
+            color: #2d3748;
+        }
+
+        .order-content {
+            display: none;
+        }
+
+        .order-content.active {
+            display: block;
+        }
+
+        .order-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .order-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .order-id {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .order-date {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .order-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-processing {
+            background-color: #bee3f8;
+            color: #3182ce;
+        }
+
+        .status-waiting {
+            background-color: #feebc8;
+            color: #dd6b20;
+        }
+
+        .status-shipping {
+            background-color: #ebf8ff;
+            color: #3182ce;
+        }
+
+        .status-completed {
+            background-color: #ebf8f2;
+            color: #38a169;
+        }
+
+        .order-items {
+            margin-bottom: 15px;
+        }
+
+        .order-item {
+            display: flex;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-right: 15px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-image i {
+            font-size: 2rem;
+            color: #cbd5e0;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .item-variant {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-bottom: 5px;
+        }
+
+        .item-price {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .order-summary {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .order-total {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .order-btn {
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .order-btn.confirm {
+            background-color: #ebf8f2;
+            color: #38a169;
+            border: 1px solid #c6f6d5;
+        }
+
+        .order-btn.confirm:hover {
+            background-color: #c6f6d5;
+        }
+
+        .order-btn.cancel {
+            background-color: #fed7d7;
+            color: #e53e3e;
+            border: 1px solid #feb2b2;
+        }
+
+        .order-btn.cancel:hover {
+            background-color: #feb2b2;
+        }
+
+        .empty-order {
+            text-align: center;
+            padding: 40px 0;
+            color: #718096;
+        }
+
+        .empty-order i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #cbd5e0;
+        }
+
+        .empty-order p {
+            font-size: 1.1rem;
+        }
+
+        .reset-btn {
+            background-color: #f56565;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .reset-btn:hover {
+            background-color: #e53e3e;
+        }
+
+        .reset-btn i {
+            font-size: 1rem;
+        }
+
+        .payment-info {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .payment-info p {
+            margin-bottom: 8px;
+        }
+
+        .payment-info strong {
+            color: #2d3748;
+        }
+
+        .payment-details {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .payment-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .payment-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e2e8f0;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAV BAR -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <div class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>YUPITA SHOP</span>
+                </div>
+                <div class="subtitle">Barang Berkualitas & Original</div>
+            </div>
+            <div class="navbar-right">
+                <span id="loggedInUser" class="user-display"></span>
+                <div class="navbar-buttons">
+                    <a href="webtoko.html" class="nav-button info-button">
+                        <i class="fas fa-arrow-left"></i>
+                        <span class="button-text">Kembali Ke Toko</span>
+                    </a>
+                </div>
+                <button class="hamburger-menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="orders-container">
+        <h1>Riwayat Pesanan Saya</h1>
+
+        <button id="resetOrders" class="reset-btn">
+            <i class="fas fa-trash-alt"></i> Reset Data Selesai
+        </button>
+
+        <div class="order-tabs">
+            <div class="order-tab active" data-tab="processing"><i class="fas fa-box"></i> Dikemas</div>
+            <div class="order-tab" data-tab="packing"><i class="fa-solid fa-truck"></i> Dikirim</div>
+            <div class="order-tab" data-tab="completed"><i class="fa-sharp fa-solid fa-check"></i> Selesai</div>
+        </div>
+
+        <!-- Tab Dikemas -->
+        <div id="processingContent" class="order-content active">
+            <div class="order-list" id="processingOrders">
+                <!-- Pesanan yang dikemas akan dimuat di sini -->
+            </div>
+        </div>
+
+        <!-- Tab Dikirim -->
+        <div id="packingContent" class="order-content">
+            <div class="order-list" id="packingOrders">
+                <!-- Pesanan yang dikirim akan dimuat di sini -->
+            </div>
+        </div>
+
+        <!-- Tab Selesai -->
+        <div id="completedContent" class="order-content">
+            <div class="order-list" id="completedOrders">
+                <!-- Pesanan yang selesai akan dimuat di sini -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Popup -->
+    <div id="confirmationPopup" class="confirmation-popup">
+        <div class="confirmation-content">
+            <i id="confirmationIcon" class="fas fa-question-circle confirmation-icon"></i>
+            <h3 id="confirmationTitle" class="confirmation-title">Konfirmasi</h3>
+            <p id="confirmationMessage" class="confirmation-message">Apakah Anda yakin ingin melakukan tindakan ini?</p>
+            <div class="confirmation-buttons">
+                <button id="confirmAction" class="confirmation-btn confirm">OK</button>
+                <button id="cancelAction" class="confirmation-btn cancel">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notificationToast" class="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Tampilkan nama user yang login
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            if (loggedInUser) {
+                document.getElementById('loggedInUser').textContent = 'Halo, ' + loggedInUser;
+            } else {
+                window.location.href = 'index.html';
+            }
+
+            // Fungsi untuk mendapatkan key riwayat pesanan berdasarkan user
+            function getUserOrdersKey() {
+                return `yupita_shop_orders_${loggedInUser}`;
+            }
+
+            // Fungsi untuk menampilkan notifikasi
+            function showNotification(message) {
+                const toast = document.getElementById('notificationToast');
+                const toastMessage = document.getElementById('toastMessage');
+
+                toastMessage.textContent = message;
+                toast.classList.add('show');
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            // Fungsi untuk menampilkan popup konfirmasi
+            function showConfirmation(title, message, callback) {
+                const popup = document.getElementById('confirmationPopup');
+                const titleEl = document.getElementById('confirmationTitle');
+                const messageEl = document.getElementById('confirmationMessage');
+                const icon = document.getElementById('confirmationIcon');
+
+                titleEl.textContent = title;
+                messageEl.textContent = message;
+                popup.classList.add('show');
+
+                const confirmBtn = document.getElementById('confirmAction');
+                const cancelBtn = document.getElementById('cancelAction');
+
+                function handleConfirm() {
+                    callback(true);
+                    popup.classList.remove('show');
+                    confirmBtn.removeEventListener('click', handleConfirm);
+                    cancelBtn.removeEventListener('click', handleCancel);
+                }
+
+                function handleCancel() {
+                    callback(false);
+                    popup.classList.remove('show');
+                    confirmBtn.removeEventListener('click', handleConfirm);
+                    cancelBtn.removeEventListener('click', handleCancel);
+                }
+
+                confirmBtn.addEventListener('click', handleConfirm);
+                cancelBtn.addEventListener('click', handleCancel);
+            }
+
+            // Fungsi untuk memuat pesanan berdasarkan status
+            function loadOrders() {
+                const userOrdersKey = getUserOrdersKey();
+                const orders = JSON.parse(localStorage.getItem(userOrdersKey)) || [];
+                const processingOrders = orders.filter(order => order.status === 'processing');
+                const packingOrders = orders.filter(order => order.status === 'packing');
+                const completedOrders = orders.filter(order => order.status === 'completed');
+
+                renderOrders('processingOrders', processingOrders, 'processing');
+                renderOrders('packingOrders', packingOrders, 'packing');
+                renderOrders('completedOrders', completedOrders, 'completed');
+            }
+
+            // Fungsi untuk merender pesanan
+            function renderOrders(containerId, orders, status) {
+                const container = document.getElementById(containerId);
+
+                if (orders.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-order">
+                            <i class="fas fa-box-open"></i>
+                            <p>Tidak ada pesanan dengan status ${getStatusText(status)}</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = orders.map(order => {
+                    const statusClass = getStatusClass(order.status);
+                    const statusText = getStatusText(order.status);
+                    const paymentText = getPaymentText(order.payment);
+                    const subtotalOrder = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                    const serviceFee = 2000;
+                    const totalPayment = subtotalOrder + order.shippingCost + serviceFee;
+
+                    return `
+                        <div class="order-card" data-orderid="${order.orderId}">
+                            <div class="order-header">
+                                <div>
+                                    <div class="order-id">#${order.orderId}</div>
+                                    <div class="order-date">${order.date}</div>
+                                </div>
+                                <div class="order-status ${statusClass}">${statusText}</div>
+                            </div>
+                            
+                            <div class="order-items">
+                                ${order.items.map(item => `
+                                    <div class="order-item">
+                                        <div class="item-image">
+                                            ${item.image ?
+                            `<img src="${item.image}" alt="${item.name}">` :
+                            `<i class="fas fa-box"></i>`}
+                                        </div>
+                                        <div class="item-details">
+                                            <div class="item-name">${item.name}</div>
+                                            ${item.size || item.color ? `
+                                                <div class="item-variant">
+                                                    ${item.size ? `Ukuran: ${item.size}` : ''}
+                                                    ${item.size && item.color ? ' | ' : ''}
+                                                    ${item.color ? `Warna: ${item.color}` : ''}
+                                                </div>
+                                            ` : ''}
+                                            <div class="item-price">Rp ${(item.price * item.quantity).toLocaleString('id-ID')} (${item.quantity}x)</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="payment-details">
+                                <div class="payment-detail">
+                                    <span>Subtotal Pesanan:</span>
+                                    <span>Rp ${subtotalOrder.toLocaleString('id-ID')}</span>
+                                </div>
+                                <div class="payment-detail">
+                                    <span>Subtotal Pengiriman:</span>
+                                    <span>Rp ${order.shippingCost.toLocaleString('id-ID')}</span>
+                                </div>
+                                <div class="payment-detail">
+                                    <span>Biaya Layanan:</span>
+                                    <span>Rp ${serviceFee.toLocaleString('id-ID')}</span>
+                                </div>
+                                <div class="payment-total">
+                                    <span>Total Pembayaran:</span>
+                                    <span>Rp ${totalPayment.toLocaleString('id-ID')}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-info">
+                                <p><strong>Metode Pembayaran:</strong> ${paymentText}</p>
+                                <p><strong>Metode Pengiriman:</strong> ${order.shippingMethod}</p>
+                            </div>
+                            
+                            ${status === 'packing' ? `
+                                <div class="order-actions">
+                                    <button class="order-btn confirm" data-orderid="${order.orderId}">Pesanan Selesai</button>
+                                </div>
+                            ` : ''}
+                            
+                            ${status === 'processing' ? `
+                                <div class="order-actions">
+                                    <button class="order-btn cancel" data-orderid="${order.orderId}">Batalkan Pesanan</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+
+                // Tambahkan event listener untuk tombol aksi
+                if (status === 'packing') {
+                    document.querySelectorAll(`#${containerId} .order-btn.confirm`).forEach(btn => {
+                        btn.addEventListener('click', function () {
+                            const orderId = this.getAttribute('data-orderid');
+                            completeOrder(orderId);
+                        });
+                    });
+                }
+
+                // Tambahkan event listener untuk tombol batalkan pesanan
+                if (status === 'processing') {
+                    document.querySelectorAll(`#${containerId} .order-btn.cancel`).forEach(btn => {
+                        btn.addEventListener('click', function () {
+                            const orderId = this.getAttribute('data-orderid');
+                            cancelOrder(orderId);
+                        });
+                    });
+                }
+            }
+
+            // Fungsi untuk membatalkan pesanan
+            function cancelOrder(orderId) {
+                showConfirmation('Batalkan Pesanan', 'Apakah Anda yakin ingin membatalkan pesanan ini?', (confirmed) => {
+                    if (confirmed) {
+                        const userOrdersKey = getUserOrdersKey();
+                        let userOrders = JSON.parse(localStorage.getItem(userOrdersKey)) || [];
+                        userOrders = userOrders.filter(order => order.orderId !== orderId);
+                        localStorage.setItem(userOrdersKey, JSON.stringify(userOrders));
+
+                        // Hapus dari orders (admin) jika diperlukan
+                        let adminOrders = JSON.parse(localStorage.getItem('orders')) || [];
+                        adminOrders = adminOrders.filter(order => order.orderId !== orderId);
+                        localStorage.setItem('orders', JSON.stringify(adminOrders));
+
+                        loadOrders();
+                        showNotification('Pesanan berhasil dibatalkan');
+                    }
+                });
+            }
+
+            // Fungsi untuk mendapatkan teks status
+            function getStatusText(status) {
+                switch (status) {
+                    case 'processing': return 'Sedang Dikemas';
+                    case 'packing': return 'Dalam Pengiriman';
+                    case 'completed': return 'Pesanan Selesai';
+                    default: return status;
+                }
+            }
+
+            // Fungsi untuk mendapatkan class status
+            function getStatusClass(status) {
+                switch (status) {
+                    case 'processing': return 'status-processing';
+                    case 'packing': return 'status-waiting';
+                    case 'completed': return 'status-completed';
+                    default: return '';
+                }
+            }
+
+            // Fungsi untuk mendapatkan teks pembayaran
+            function getPaymentText(payment) {
+                switch (payment) {
+                    case 'transfer': return 'Transfer Bank (BRI)';
+                    case 'ewallet': return 'E-Wallet (Dana)';
+                    case 'cod': return 'COD (Bayar di Tempat)';
+                    default: return payment;
+                }
+            }
+
+            // Fungsi untuk menyelesaikan pesanan
+            function completeOrder(orderId) {
+                showConfirmation('Konfirmasi Pesanan', 'Apakah Anda yakin pesanan sudah selesai?', (confirmed) => {
+                    if (confirmed) {
+                        const userOrdersKey = getUserOrdersKey();
+                        const orders = JSON.parse(localStorage.getItem(userOrdersKey)) || [];
+                        const orderIndex = orders.findIndex(o => o.orderId === orderId);
+
+                        if (orderIndex !== -1) {
+                            orders[orderIndex].status = 'completed';
+                            localStorage.setItem(userOrdersKey, JSON.stringify(orders));
+                            loadOrders();
+                            showNotification('Pesanan berhasil diselesaikan');
+
+                            // Update orders in admin panel
+                            updateAdminOrders(orderId, 'completed');
+                        }
+                    }
+                });
+            }
+
+            // Fungsi untuk mengupdate pesanan di panel admin
+            function updateAdminOrders(orderId, newStatus) {
+                const adminOrders = JSON.parse(localStorage.getItem('orders')) || [];
+                const orderIndex = adminOrders.findIndex(o => o.orderId === orderId);
+
+                if (orderIndex !== -1) {
+                    adminOrders[orderIndex].status = newStatus;
+                    localStorage.setItem('orders', JSON.stringify(adminOrders));
+
+                    // Trigger event untuk update di admin panel
+                    const event = new Event('localStorageUpdated');
+                    window.dispatchEvent(event);
+                }
+            }
+
+            // Fungsi untuk reset data pesanan (HANYA PESANAN SELESAI)
+            function resetOrders() {
+                showConfirmation('Konfirmasi Reset', 'Apakah Anda yakin ingin menghapus semua data pesanan yang SELESAI?', (confirmed) => {
+                    if (confirmed) {
+                        const userOrdersKey = getUserOrdersKey();
+                        const orders = JSON.parse(localStorage.getItem(userOrdersKey)) || [];
+
+                        // Filter hanya pesanan yang statusnya bukan 'completed'
+                        const filteredOrders = orders.filter(order => order.status !== 'completed');
+
+                        localStorage.setItem(userOrdersKey, JSON.stringify(filteredOrders));
+                        loadOrders();
+                        showNotification('Data pesanan selesai berhasil direset');
+                    }
+                });
+            }
+
+            // Event listener untuk tab
+            document.querySelectorAll('.order-tab').forEach(tab => {
+                tab.addEventListener('click', function () {
+                    // Hapus active class dari semua tab
+                    document.querySelectorAll('.order-tab').forEach(t => t.classList.remove('active'));
+                    // Tambahkan active class ke tab yang diklik
+                    this.classList.add('active');
+
+                    // Sembunyikan semua konten
+                    document.querySelectorAll('.order-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+
+                    // Tampilkan konten yang sesuai
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(`${tabId}Content`).classList.add('active');
+                });
+            });
+
+            // Event listener untuk tombol reset
+            document.getElementById('resetOrders').addEventListener('click', resetOrders);
+
+            // Load orders saat pertama kali halaman dimuat
+            loadOrders();
+
+            // Listen for changes from admin panel
+            window.addEventListener('storage', function (event) {
+                if (event.key === 'orders') {
+                    // Sync orders from admin to user
+                    syncOrdersFromAdmin();
+                }
+            });
+
+            // Fungsi untuk sinkronisasi pesanan dari admin ke user
+            function syncOrdersFromAdmin() {
+                const adminOrders = JSON.parse(localStorage.getItem('orders')) || [];
+                const userOrdersKey = getUserOrdersKey();
+                const userOrders = JSON.parse(localStorage.getItem(userOrdersKey)) || [];
+                const loggedInUser = localStorage.getItem('loggedInUser');
+
+                // Filter orders for this user only
+                const userAdminOrders = adminOrders.filter(order =>
+                    order.customer?.name === loggedInUser ||
+                    order.customer?.email === `${loggedInUser}@example.com`
+                );
+
+                // Update user orders based on admin orders
+                userAdminOrders.forEach(adminOrder => {
+                    const existingIndex = userOrders.findIndex(o => o.orderId === adminOrder.orderId);
+
+                    if (existingIndex !== -1) {
+                        // Update existing order
+                        userOrders[existingIndex].status = adminOrder.status;
+                    } else {
+                        // Add new order (if any)
+                        userOrders.push({
+                            orderId: adminOrder.orderId,
+                            date: adminOrder.date,
+                            items: adminOrder.items,
+                            total: adminOrder.total,
+                            payment: adminOrder.payment,
+                            shippingMethod: adminOrder.shipping?.method || 'JNE',
+                            shippingCost: adminOrder.shipping?.cost || 0,
+                            status: adminOrder.status
+                        });
+                    }
+                });
+
+                localStorage.setItem(userOrdersKey, JSON.stringify(userOrders));
+                loadOrders();
+            }
+
+            // Initial sync
+            syncOrdersFromAdmin();
+        });
+    </script>
+</body>
+
+</html>

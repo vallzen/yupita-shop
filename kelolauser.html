@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola User - Admin Yupita Shop</title>
+    <link rel="stylesheet" href="assets/css/stylekelolauser.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tambahkan library SheetJS untuk ekspor XLSX -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+    <style>
+        /* Notification Popup Styles */
+        .notification-popup {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #48bb78;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            transform: translateX(150%);
+            transition: transform 0.3s ease-out;
+        }
+
+        .notification-popup.show {
+            transform: translateX(0);
+        }
+
+        .notification-popup.error {
+            background-color: #f56565;
+        }
+
+        .notification-popup i {
+            font-size: 1.5rem;
+        }
+
+        .notification-popup .notification-content {
+            flex: 1;
+        }
+
+        .notification-popup .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 10px;
+        }
+
+        /* Confirmation Popup Styles */
+        .confirmation-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .confirmation-popup.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .confirmation-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .confirmation-popup.show .confirmation-content {
+            transform: translateY(0);
+        }
+
+        .confirmation-icon {
+            font-size: 3rem;
+            color: #4299e1;
+            margin-bottom: 1rem;
+        }
+
+        .confirmation-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2d3748;
+        }
+
+        .confirmation-message {
+            color: #4a5568;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .confirmation-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .confirmation-btn.confirm {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+        }
+
+        .confirmation-btn.cancel {
+            background-color: #f8fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .confirmation-btn.confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(66, 153, 225, 0.3);
+        }
+
+        .confirmation-btn.cancel:hover {
+            background-color: #edf2f7;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Password toggle styles */
+        .password-field {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50px;
+            background: none;
+            border: none;
+            color: #a0aec0;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        /* Password validation styles */
+        .password-requirements {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #4a5568;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .requirement i {
+            font-size: 0.8rem;
+            width: 1rem;
+        }
+
+        .requirement.valid {
+            color: #38a169;
+        }
+
+        .requirement.invalid {
+            color: #e53e3e;
+        }
+
+        /* Draggable Modal Styles */
+        .modal-header {
+            padding: 1rem 1.5rem;
+            cursor: move;
+            background-color: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #2b6cb0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        /* Filter styles */
+        .filter-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-section label {
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .filter-section select,
+        .filter-section input {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .filter-section select:focus,
+        .filter-section input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+        }
+
+        .filter-section button {
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .filter-section button:hover {
+            background: linear-gradient(135deg, #3182ce 0%, #2b6cb0 100%);
+        }
+
+        /* Updated Search Box Styles - Smaller version */
+        .search-filter {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            /* Padding  */
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            /* Font size */
+            transition: all 0.3s;
+            background-color: #f8fafc;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+            background-color: white;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 0.8rem;
+            /* Posisi icon  */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+            font-size: 0.9rem;
+            /* Ukuran icon */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Notification Popup -->
+    <div id="notificationPopup" class="notification-popup">
+        <i class="fas fa-check-circle"></i>
+        <div class="notification-content"></div>
+        <button class="notification-close">&times;</button>
+    </div>
+
+    <!-- Confirmation Popup -->
+    <div id="confirmationPopup" class="confirmation-popup">
+        <div class="confirmation-content">
+            <i id="confirmationIcon" class="fas fa-question-circle confirmation-icon"></i>
+            <h3 id="confirmationTitle" class="confirmation-title">Konfirmasi</h3>
+            <p id="confirmationMessage" class="confirmation-message">Apakah Anda yakin ingin melakukan tindakan ini?</p>
+            <div class="confirmation-buttons">
+                <button id="confirmAction" class="confirmation-btn confirm">OK</button>
+                <button id="cancelAction" class="confirmation-btn cancel">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fixed Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-user-cog"></i>
+                    <h1>Admin Panel</h1>
+                </div>
+                <nav class="admin-nav">
+                    <ul>
+                        <li class="active"><a href="#"><i class="fas fa-users"></i> Kelola User</a></li>
+                        <li><a href="datapenjualan.html"><i class="fas fa-chart-line"></i> Data Penjualan</a></li>
+                        <li><a href="pesanancustomer.html"><i class="fas fa-shopping-cart"></i> Pesanan Customer</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="admin-info">
+                    <div class="admin-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="admin-details">
+                        <span id="currentAdminName"></span>
+                        <small>Administrator</small>
+                    </div>
+                    <button id="logoutAdmin" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- User List Section -->
+            <section class="user-management">
+                <!-- Updated Search Box -->
+                <div class="search-filter">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchUser" placeholder="Cari user...">
+                    </div>
+                </div>
+
+                <!-- Filter Section -->
+                <div class="filter-section">
+                    <label for="startDate">Filter Tanggal:</label>
+                    <input type="date" id="startDate">
+
+                    <label for="endDate">s/d</label>
+                    <input type="date" id="endDate">
+
+                    <button id="applyFilterBtn">Terapkan</button>
+                    <button id="resetFilterBtn">Reset</button>
+                </div>
+
+                <div class="user-actions">
+                    <button id="addUserBtn" class="action-btn">
+                        <i class="fas fa-user-plus"></i> Tambah User
+                    </button>
+                    <button id="exportBtn" class="action-btn">
+                        <i class="fas fa-file-export"></i> Ekspor Data
+                    </button>
+                </div>
+
+                <div class="user-list-container">
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Password</th>
+                                <th>Tanggal Daftar</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Edit User Section -->
+            <section class="edit-user-section">
+                <h2>Edit Akun User</h2>
+                <form id="editUserForm">
+                    <input type="hidden" id="selectedUserId">
+
+                    <div class="form-group">
+                        <label for="editUserUsername">Username</label>
+                        <input type="text" id="editUserUsername" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editUserEmail">Email</label>
+                        <input type="email" id="editUserEmail" required>
+                    </div>
+
+                    <div class="form-group password-field">
+                        <label for="editUserPassword">Password Baru (kosongkan jika tidak diubah)</label>
+                        <input type="password" id="editUserPassword">
+                        <button type="button" class="password-toggle" id="toggleEditPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <div id="passwordRequirements" class="password-requirements">
+                            <div id="lengthReq" class="requirement invalid">
+                                <i class="fas fa-circle"></i>
+                                <span>Minimal 8 karakter (maks. 20)</span>
+                            </div>
+                            <div id="letterReq" class="requirement invalid">
+                                <i class="fas fa-circle"></i>
+                                <span>Minimal 1 huruf</span>
+                            </div>
+                            <div id="numberReq" class="requirement invalid">
+                                <i class="fas fa-circle"></i>
+                                <span>Minimal 1 angka</span>
+                            </div>
+                            <div id="specialReq" class="requirement invalid">
+                                <i class="fas fa-circle"></i>
+                                <span>Minimal 1 karakter khusus (# ? ! $ & @ _ .)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="save-btn">
+                            <i class="fas fa-save"></i> Simpan
+                        </button>
+                        <button type="button" id="cancelEditBtn" class="cancel-btn">
+                            <i class="fas fa-times"></i> Batal
+                        </button>
+                        <button type="button" id="deleteUserBtn" class="delete-btn">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content" id="draggableModal">
+            <div class="modal-header" id="modalHeader">
+                <h2>Tambah User Baru</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label for="newUsername">Username</label>
+                        <input type="text" id="newUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newEmail">Email</label>
+                        <input type="email" id="newEmail" required>
+                    </div>
+                    <div class="form-group password-field">
+                        <label for="newPassword">Password</label>
+                        <input type="password" id="newPassword" required>
+                        <button type="button" class="password-toggle" id="toggleNewPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <div id="newPasswordRequirements" class="password-requirements">
+                            <div id="newLengthReq" class="requirement invalid">
+                                <i class="fas fa-circle"></i>
+                                <span>Minimal 8 karakter (maks. 20)</span>
+                            </div>
+                            <div id="newLetterReq" class="requirement invalid">
+                                <i class="fas fa-circle"></i>
+                                <span>Minimal 1 huruf</span>
+                            </div>
+                            <div id="newNumberReq" class="requirement invalid">
+                                <i class="fas fa-circle"></i>
+                                <span>Minimal 1 angka</span>
+                            </div>
+                            <div id="newSpecialReq" class="requirement invalid">
+                                <i class="fas fa-circle"></i>
+                                <span>Minimal 1 karakter khusus (# ? ! $ & @ _ .)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="save-btn">
+                            <i class="fas fa-save"></i> Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Notification functions
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notificationPopup');
+            const content = notification.querySelector('.notification-content');
+            const icon = notification.querySelector('i');
+
+            content.textContent = message;
+
+            if (isError) {
+                notification.classList.add('error');
+                icon.className = 'fas fa-exclamation-circle';
+            } else {
+                notification.classList.remove('error');
+                icon.className = 'fas fa-check-circle';
+            }
+
+            notification.classList.add('show');
+
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        function hideNotification() {
+            document.getElementById('notificationPopup').classList.remove('show');
+        }
+
+        // Confirmation functions
+        function showConfirmation(title, message, callback) {
+            const popup = document.getElementById('confirmationPopup');
+            const titleEl = document.getElementById('confirmationTitle');
+            const messageEl = document.getElementById('confirmationMessage');
+            const icon = document.getElementById('confirmationIcon');
+
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+
+            popup.classList.add('show');
+
+            const confirmBtn = document.getElementById('confirmAction');
+            const cancelBtn = document.getElementById('cancelAction');
+
+            function handleConfirm() {
+                callback(true);
+                popup.classList.remove('show');
+                confirmBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+            }
+
+            function handleCancel() {
+                callback(false);
+                popup.classList.remove('show');
+                confirmBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+            }
+
+            confirmBtn.addEventListener('click', handleConfirm);
+            cancelBtn.addEventListener('click', handleCancel);
+        }
+
+        // Close notification when clicking X
+        document.querySelector('.notification-close').addEventListener('click', hideNotification);
+
+        // Password validation function
+        function validatePassword(password, isNewPassword = false) {
+            const requirements = {
+                length: password.length >= 8 && password.length <= 20,
+                letter: /[a-zA-Z]/.test(password),
+                number: /[0-9]/.test(password),
+                special: /[#?!$&@_\.*,<>/:;]/.test(password)
+            };
+
+            // Update UI for each requirement
+            if (isNewPassword) {
+                document.getElementById('newLengthReq').className = requirements.length ? 'requirement valid' : 'requirement invalid';
+                document.getElementById('newLetterReq').className = requirements.letter ? 'requirement valid' : 'requirement invalid';
+                document.getElementById('newNumberReq').className = requirements.number ? 'requirement valid' : 'requirement invalid';
+                document.getElementById('newSpecialReq').className = requirements.special ? 'requirement valid' : 'requirement invalid';
+
+                // Update icons
+                document.querySelector('#newLengthReq i').className = requirements.length ? 'fas fa-check-circle' : 'fas fa-circle';
+                document.querySelector('#newLetterReq i').className = requirements.letter ? 'fas fa-check-circle' : 'fas fa-circle';
+                document.querySelector('#newNumberReq i').className = requirements.number ? 'fas fa-check-circle' : 'fas fa-circle';
+                document.querySelector('#newSpecialReq i').className = requirements.special ? 'fas fa-check-circle' : 'fas fa-circle';
+            } else {
+                document.getElementById('lengthReq').className = requirements.length ? 'requirement valid' : 'requirement invalid';
+                document.getElementById('letterReq').className = requirements.letter ? 'requirement valid' : 'requirement invalid';
+                document.getElementById('numberReq').className = requirements.number ? 'requirement valid' : 'requirement invalid';
+                document.getElementById('specialReq').className = requirements.special ? 'requirement valid' : 'requirement invalid';
+
+                // Update icons
+                document.querySelector('#lengthReq i').className = requirements.length ? 'fas fa-check-circle' : 'fas fa-circle';
+                document.querySelector('#letterReq i').className = requirements.letter ? 'fas fa-check-circle' : 'fas fa-circle';
+                document.querySelector('#numberReq i').className = requirements.number ? 'fas fa-check-circle' : 'fas fa-circle';
+                document.querySelector('#specialReq i').className = requirements.special ? 'fas fa-check-circle' : 'fas fa-circle';
+            }
+
+            // Return true if all requirements are met
+            return requirements.length && requirements.letter && requirements.number && requirements.special;
+        }
+
+        // Password toggle functionality
+        function setupPasswordToggle() {
+            // For edit password
+            const toggleEditPassword = document.getElementById('toggleEditPassword');
+            const editPasswordInput = document.getElementById('editUserPassword');
+
+            toggleEditPassword.addEventListener('click', function () {
+                const type = editPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                editPasswordInput.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+
+            // For new password
+            const toggleNewPassword = document.getElementById('toggleNewPassword');
+            const newPasswordInput = document.getElementById('newPassword');
+
+            toggleNewPassword.addEventListener('click', function () {
+                const type = newPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                newPasswordInput.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+
+            // Add real-time password validation for edit form
+            editPasswordInput.addEventListener('input', function () {
+                const password = this.value;
+                if (password.length > 0) {
+                    validatePassword(password);
+                    document.getElementById('passwordRequirements').style.display = 'block';
+                } else {
+                    document.getElementById('passwordRequirements').style.display = 'none';
+                }
+            });
+
+            // Add real-time password validation for new user form
+            newPasswordInput.addEventListener('input', function () {
+                const password = this.value;
+                if (password.length > 0) {
+                    validatePassword(password, true);
+                    document.getElementById('newPasswordRequirements').style.display = 'block';
+                } else {
+                    document.getElementById('newPasswordRequirements').style.display = 'none';
+                }
+            });
+        }
+
+        // Cek autentikasi admin
+        if (!sessionStorage.getItem('adminAuthenticated')) {
+            window.location.href = 'loginadmin.html';
+        }
+
+        // Set admin name
+        document.getElementById('currentAdminName').textContent =
+            sessionStorage.getItem('adminUsername') || 'Admin';
+
+        // Logout function
+        document.getElementById('logoutAdmin').addEventListener('click', function () {
+            showConfirmation('Konfirmasi Logout', 'Apakah Anda yakin ingin logout?', (confirmed) => {
+                if (confirmed) {
+                    sessionStorage.removeItem('adminAuthenticated');
+                    sessionStorage.removeItem('adminUsername');
+                    window.location.href = 'loginadmin.html';
+                }
+            });
+        });
+
+        // Load user data with filter
+        function loadUserData() {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+
+            let filteredUsers = [...users];
+
+            // Jika ada filter tanggal yang dipilih
+            if (startDateInput.value && endDateInput.value) {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+
+                // Set waktu endDate ke akhir hari (23:59:59)
+                endDate.setHours(23, 59, 59, 999);
+
+                filteredUsers = users.filter(user => {
+                    if (!user.joinDate) return false;
+                    const joinDate = new Date(user.joinDate);
+                    return joinDate >= startDate && joinDate <= endDate;
+                });
+            }
+
+            renderUserTable(filteredUsers);
+        }
+
+        // Render user table
+        function renderUserTable(users) {
+            const userTableBody = document.getElementById('userTableBody');
+            userTableBody.innerHTML = '';
+
+            if (users.length === 0) {
+                userTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="no-data">Tidak ada user terdaftar</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            users.forEach((user, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.password}</td>
+                    <td>${user.registrationDate || 'N/A'}</td>
+                    <td>
+                        <button class="edit-btn" data-userid="${user.username}">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    </td>
+                `;
+                userTableBody.appendChild(tr);
+            });
+
+            // Add event listeners to edit buttons
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const userId = this.getAttribute('data-userid');
+                    const users = JSON.parse(localStorage.getItem('users')) || [];
+                    const user = users.find(u => u.username === userId);
+
+                    if (user) {
+                        document.getElementById('selectedUserId').value = user.username;
+                        document.getElementById('editUserUsername').value = user.username;
+                        document.getElementById('editUserEmail').value = user.email;
+                        document.getElementById('editUserPassword').value = '';
+                        document.getElementById('passwordRequirements').style.display = 'none';
+
+                        // Scroll to edit section
+                        document.querySelector('.edit-user-section').scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Draggable Modal Functionality
+        function makeDraggable(modal, header) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+            header.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // get the mouse cursor position at startup:
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                // call a function whenever the cursor moves:
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // calculate the new cursor position:
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                // set the element's new position:
+                modal.style.top = (modal.offsetTop - pos2) + "px";
+                modal.style.left = (modal.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                // stop moving when mouse button is released:
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+
+        // Fungsi untuk ekspor data ke XLSX
+        function exportToExcel() {
+            // Ambil data yang sedang ditampilkan di tabel
+            const rows = document.querySelectorAll('#userTableBody tr');
+
+            // Jika tidak ada data
+            if (rows.length === 0 || (rows.length === 1 && rows[0].querySelector('.no-data'))) {
+                showNotification('Tidak ada data untuk diekspor', true);
+                return;
+            }
+
+            // Siapkan data untuk ekspor
+            const data = [];
+
+            // Tambahkan header
+            data.push(['No', 'Username', 'Email', 'Password', 'Tanggal Daftar']);
+
+            // Tambahkan data dari setiap baris
+            rows.forEach(row => {
+                // Skip baris "no-data"
+                if (row.querySelector('.no-data')) return;
+
+                const cells = row.querySelectorAll('td');
+                const rowData = [
+                    cells[0].textContent,
+                    cells[1].textContent,
+                    cells[2].textContent,
+                    cells[3].textContent,
+                    cells[4].textContent
+                ];
+                data.push(rowData);
+            });
+
+            // Buat workbook
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            // Tambahkan worksheet ke workbook
+            XLSX.utils.book_append_sheet(wb, ws, "Data User");
+
+            // Generate nama file dengan timestamp
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const filename = `data_user_${timestamp}.xlsx`;
+
+            // Ekspor ke file XLSX
+            XLSX.writeFile(wb, filename);
+
+            showNotification('Data berhasil diekspor ke XLSX');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            loadUserData();
+            setupPasswordToggle();
+
+            // Set up storage event listener for auto-update
+            window.addEventListener('storage', function (event) {
+                if (event.key === 'users') {
+                    loadUserData();
+                }
+            });
+
+            // Initialize draggable modal
+            const modal = document.getElementById('draggableModal');
+            const modalHeader = document.getElementById('modalHeader');
+            makeDraggable(modal, modalHeader);
+
+            // Add event listener for filter buttons
+            document.getElementById('applyFilterBtn').addEventListener('click', function () {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+
+                if (startDate && endDate) {
+                    if (new Date(startDate) > new Date(endDate)) {
+                        showNotification('Tanggal mulai tidak boleh lebih besar dari tanggal akhir!', true);
+                        return;
+                    }
+                    loadUserData();
+                    showNotification(`Menampilkan user dari ${formatDate(startDate)} sampai ${formatDate(endDate)}`);
+                } else {
+                    showNotification('Harap pilih kedua tanggal untuk filter!', true);
+                }
+            });
+
+            document.getElementById('resetFilterBtn').addEventListener('click', function () {
+                document.getElementById('startDate').value = '';
+                document.getElementById('endDate').value = '';
+                loadUserData();
+                showNotification('Filter direset, menampilkan semua user');
+            });
+
+            // Format tanggal untuk tampilan
+            function formatDate(dateString) {
+                const options = { day: 'numeric', month: 'long', year: 'numeric' };
+                return new Date(dateString).toLocaleDateString('id-ID', options);
+            }
+
+            // Tambahkan event listener untuk tombol ekspor
+            document.getElementById('exportBtn').addEventListener('click', exportToExcel);
+        });
+
+        // Search functionality
+        document.getElementById('searchUser').addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#userTableBody tr');
+
+            rows.forEach(row => {
+                const username = row.cells[1].textContent.toLowerCase();
+                const email = row.cells[2].textContent.toLowerCase();
+                const password = row.cells[3].textContent.toLowerCase();
+
+                if (username.includes(searchTerm) || email.includes(searchTerm) || password.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Form submission
+        document.getElementById('editUserForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const userId = document.getElementById('selectedUserId').value;
+            const newUsername = document.getElementById('editUserUsername').value.trim();
+            const newEmail = document.getElementById('editUserEmail').value.trim();
+            const newPassword = document.getElementById('editUserPassword').value;
+
+            if (!userId || !newUsername || !newEmail) {
+                showNotification('Data tidak valid!', true);
+                return;
+            }
+
+            // Validate password if provided
+            if (newPassword && !validatePassword(newPassword)) {
+                showNotification('Password tidak memenuhi persyaratan!', true);
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            const userIndex = users.findIndex(u => u.username === userId);
+
+            if (userIndex === -1) {
+                showNotification('User tidak ditemukan!', true);
+                return;
+            }
+
+            // Check for duplicate username
+            const usernameExists = users.some((u, index) =>
+                index !== userIndex && u.username === newUsername
+            );
+
+            if (usernameExists) {
+                showNotification('Username sudah digunakan!', true);
+                return;
+            }
+
+            // Check for duplicate email
+            const emailExists = users.some((u, index) =>
+                index !== userIndex && u.email === newEmail
+            );
+
+            if (emailExists) {
+                showNotification('Email sudah digunakan!', true);
+                return;
+            }
+
+            // Update user data
+            users[userIndex].username = newUsername;
+            users[userIndex].email = newEmail;
+
+            if (newPassword) {
+                users[userIndex].password = newPassword;
+            }
+
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Trigger custom event to update other tabs
+            const event = new Event('localStorageUpdated');
+            window.dispatchEvent(event);
+
+            showNotification('Perubahan berhasil disimpan!');
+            loadUserData();
+            this.reset();
+            document.getElementById('passwordRequirements').style.display = 'none';
+        });
+
+        // Cancel edit
+        document.getElementById('cancelEditBtn').addEventListener('click', function () {
+            document.getElementById('editUserForm').reset();
+            document.getElementById('passwordRequirements').style.display = 'none';
+        });
+
+        // Delete user
+        document.getElementById('deleteUserBtn').addEventListener('click', function () {
+            const userId = document.getElementById('selectedUserId').value;
+
+            if (!userId) {
+                return;
+            }
+
+            showConfirmation('Konfirmasi Hapus', 'Apakah Anda yakin ingin menghapus akun ini?', (confirmed) => {
+                if (confirmed) {
+                    let users = JSON.parse(localStorage.getItem('users')) || [];
+                    users = users.filter(u => u.username !== userId);
+                    localStorage.setItem('users', JSON.stringify(users));
+
+                    // Trigger custom event to update other tabs
+                    const event = new Event('localStorageUpdated');
+                    window.dispatchEvent(event);
+
+                    const loggedInUser = localStorage.getItem('loggedInUser');
+                    if (loggedInUser === userId) {
+                        localStorage.removeItem('loggedInUser');
+                        window.location.href = 'index.html';
+                    }
+
+                    showNotification('Akun berhasil dihapus!');
+                    loadUserData();
+                    document.getElementById('editUserForm').reset();
+                    document.getElementById('passwordRequirements').style.display = 'none';
+                }
+            });
+        });
+
+        // Modal functionality
+        const addUserModal = document.getElementById('addUserModal');
+        const addUserBtn = document.getElementById('addUserBtn');
+        const closeModal = document.querySelector('.close-modal');
+
+        addUserBtn.addEventListener('click', () => {
+            addUserModal.style.display = 'block';
+        });
+
+        closeModal.addEventListener('click', () => {
+            addUserModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === addUserModal) {
+                addUserModal.style.display = 'none';
+            }
+        });
+
+        // Add user form
+        document.getElementById('addUserForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const username = document.getElementById('newUsername').value.trim();
+            const email = document.getElementById('newEmail').value.trim();
+            const password = document.getElementById('newPassword').value;
+
+            if (!username || !email || !password) {
+                showNotification('Semua field harus diisi!', true);
+                return;
+            }
+
+            // Validate password
+            if (!validatePassword(password, true)) {
+                showNotification('Password tidak memenuhi persyaratan!', true);
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            if (users.some(u => u.username === username)) {
+                showNotification('Username sudah digunakan!', true);
+                return;
+            }
+
+            if (users.some(u => u.email === email)) {
+                showNotification('Email sudah digunakan!', true);
+                return;
+            }
+
+            const newUser = {
+                username,
+                email,
+                password,
+                registrationDate: new Date().toLocaleDateString('id-ID'),
+                joinDate: new Date().toISOString() // Tambahkan timestamp untuk filter
+            };
+
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Update user statistics
+            updateUserStatistics(newUser);
+
+            // Trigger custom event to update other tabs
+            const event = new Event('localStorageUpdated');
+            window.dispatchEvent(event);
+
+            showNotification('User berhasil ditambahkan!');
+            this.reset();
+            addUserModal.style.display = 'none';
+            document.getElementById('newPasswordRequirements').style.display = 'none';
+            loadUserData();
+        });
+
+        // Function to update user statistics
+        function updateUserStatistics(user) {
+            const now = new Date();
+            const currentMonth = now.toLocaleString('id-ID', { month: 'long' });
+            const currentYear = now.getFullYear();
+            const currentMonthKey = `${currentMonth} ${currentYear}`;
+
+            const userStats = JSON.parse(localStorage.getItem('userStats')) || {
+                totalUsers: 0,
+                monthlyNewUsers: {},
+                dailyNewUsers: {}
+            };
+
+            // Update total users
+            userStats.totalUsers = (userStats.totalUsers || 0) + 1;
+
+            // Update monthly new users
+            if (!userStats.monthlyNewUsers[currentMonthKey]) {
+                userStats.monthlyNewUsers[currentMonthKey] = 0;
+            }
+            userStats.monthlyNewUsers[currentMonthKey]++;
+
+            // Update daily new users
+            const today = now.toLocaleDateString('id-ID');
+            if (!userStats.dailyNewUsers[today]) {
+                userStats.dailyNewUsers[today] = 0;
+            }
+            userStats.dailyNewUsers[today]++;
+
+            localStorage.setItem('userStats', JSON.stringify(userStats));
+        }
+
+        // Listen for custom events to update data
+        window.addEventListener('localStorageUpdated', function () {
+            loadUserData();
+        });
+    </script>
+</body>
+
+</html>
